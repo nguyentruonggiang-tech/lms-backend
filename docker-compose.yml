@@ -1,0 +1,20 @@
+services:
+  lms-mysql:
+    container_name: lms-mysql
+    image: mysql:latest
+    volumes:
+      - lms-mysql:/var/lib/mysql
+    ports:
+      - "3310:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=lms-backend
+    networks:
+      - lms-network
+
+networks:
+  lms-network:
+    driver: bridge
+
+volumes:
+  lms-mysql:
