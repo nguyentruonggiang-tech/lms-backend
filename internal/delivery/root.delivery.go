@@ -2,12 +2,17 @@ package delivery
 
 import "github.com/gin-gonic/gin"
 
-type RootDelivery struct{}
+type RootDelivery struct {
+	authDelivery *authDelivery
+}
 
-func NewRootDelivery() *RootDelivery {
-	return &RootDelivery{}
+func NewRootDelivery(authDelivery *authDelivery) *RootDelivery {
+	return &RootDelivery{authDelivery: authDelivery}
 }
 
 func (r *RootDelivery) RegisterRouter(engine *gin.Engine) {
-	engine.Group("api")
+	apiGroup := engine.Group("api")
+	{
+		r.authDelivery.RegisterRouter(apiGroup)
+	}
 }
