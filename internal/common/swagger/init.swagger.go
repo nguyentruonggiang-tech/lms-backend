@@ -54,6 +54,7 @@ func Start(ginEngine *gin.Engine) {
 		modules := []func(*openapi3.Reflector) error{
 			auth,
 			adminCategory,
+			adminCourse,
 		}
 
 		for _, mod := range modules {
