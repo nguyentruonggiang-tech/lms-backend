@@ -90,6 +90,12 @@ func (r *courseRepository) Update(ctx context.Context, id int, body dto.CourseUp
 	return q.Save(ctx)
 }
 
+func (r *courseRepository) UpdateStatus(ctx context.Context, id int, status string) (*ent.Courses, error) {
+	return r.client.Courses.UpdateOneID(id).
+		SetStatus(courses.Status(status)).
+		Save(ctx)
+}
+
 func (r *courseRepository) Delete(ctx context.Context, id int) error {
 	return r.client.Courses.DeleteOneID(id).Exec(ctx)
 }

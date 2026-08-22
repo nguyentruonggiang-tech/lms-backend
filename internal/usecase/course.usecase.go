@@ -10,5 +10,6 @@ type CourseUsecase interface {
 	FindAll(ctx context.Context, page, limit string) (any, error)
 	FindByID(ctx context.Context, id int) (any, error)
 	Update(ctx context.Context, id int, body dto.CourseUpdateReq) (any, error)
+	UpdateStatus(ctx context.Context, id int, body dto.CourseUpdateStatusReq) (any, error)
 	Delete(ctx context.Context, id int) (any, error)
 }

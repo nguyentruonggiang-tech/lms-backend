@@ -65,6 +65,14 @@ func (u *courseUsecase) Update(ctx context.Context, id int, body dto.CourseUpdat
 	return data, nil
 }
 
+func (u *courseUsecase) UpdateStatus(ctx context.Context, id int, body dto.CourseUpdateStatusReq) (any, error) {
+	data, err := u.courseRepository.UpdateStatus(ctx, id, body.Status)
+	if err != nil {
+		return nil, response.NewBadRequestException(err.Error())
+	}
+	return data, nil
+}
+
 func (u *courseUsecase) Delete(ctx context.Context, id int) (any, error) {
 	err := u.courseRepository.Delete(ctx, id)
 	if err != nil {

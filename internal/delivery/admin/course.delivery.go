@@ -23,6 +23,7 @@ func (d *CourseDelivery) RegisterRouter(adminGroup *gin.RouterGroup) {
 		courses.GET("", d.courseHandler.FindAll)
 		courses.GET(":id", d.courseHandler.FindByID)
 		courses.PUT(":id", d.courseHandler.Update)
+		courses.PATCH(":id/status", d.courseHandler.UpdateStatus)
 		courses.DELETE(":id", d.courseHandler.Delete)
 	}
 }

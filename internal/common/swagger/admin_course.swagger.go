@@ -69,6 +69,21 @@ func adminCourse(reflector *openapi3.Reflector) error {
 	}
 
 	{
+		op, err := reflector.NewOperationContext(http.MethodPatch, "/api/admin/courses/{id}/status")
+		if err != nil {
+			return err
+		}
+		op.SetTags("Admin Course")
+		op.SetSummary("Đổi trạng thái course")
+		op.AddReqStructure(new(struct {
+			Id string `path:"id" example:"1"`
+		}))
+		op.AddReqStructure(new(dto.CourseUpdateStatusReq))
+		op.AddRespStructure(new(response.SuccessFormat[*ent.Courses]))
+		reflector.AddOperation(op)
+	}
+
+	{
 		op, err := reflector.NewOperationContext(http.MethodDelete, "/api/admin/courses/{id}")
 		if err != nil {
 			return err

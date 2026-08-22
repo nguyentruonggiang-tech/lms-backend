@@ -82,6 +82,28 @@ func (h *CourseHandler) Update(ctx *gin.Context) {
 	response.Success(data, "success", 0, ctx)
 }
 
+func (h *CourseHandler) UpdateStatus(ctx *gin.Context) {
+	id, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		ctx.Error(response.NewBadRequestException("invalid id"))
+		return
+	}
+
+	var body dto.CourseUpdateStatusReq
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.Error(response.NewBadRequestException(err.Error()))
+		return
+	}
+
+	data, err := h.courseUsecase.UpdateStatus(ctx.Request.Context(), id, body)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+
+	response.Success(data, "success", 0, ctx)
+}
+
 func (h *CourseHandler) Delete(ctx *gin.Context) {
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {

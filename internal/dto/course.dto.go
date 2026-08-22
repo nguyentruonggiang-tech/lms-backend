@@ -21,3 +21,7 @@ type CourseUpdateReq struct {
 	Level       *string  `json:"level" binding:"omitempty,oneof=beginner intermediate advanced"`
 	Status      *string  `json:"status" binding:"omitempty,oneof=draft published archived"`
 }
+
+type CourseUpdateStatusReq struct {
+	Status string `json:"status" binding:"required,oneof=draft published archived"`
+}
