@@ -5,7 +5,9 @@ import (
 	"lms-backend/internal/common/env"
 	"lms-backend/internal/common/middlewares"
 	"lms-backend/internal/delivery"
+	"lms-backend/internal/delivery/admin"
 	"lms-backend/internal/handler"
+	adminHandler "lms-backend/internal/handler/admin"
 	"lms-backend/internal/repository/repository_impl"
 	"lms-backend/internal/usecase/usecase_impl"
 
@@ -14,13 +16,19 @@ import (
 
 func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	tokenUsecase := usecase_impl.NewTokenUsecase(e)
-	userRepo := repository_impl.NewUserRepository(entClient)
-	authMiddleware := middlewares.NewAuthMiddleware(tokenUsecase, userRepo)
 
-	authUsecase := usecase_impl.NewAuthUsecase(userRepo, tokenUsecase)
+	userRepository := repository_impl.NewUserRepository(entClient)
+	authMiddleware := middlewares.NewAuthMiddleware(tokenUsecase, userRepository)
+
+	authUsecase := usecase_impl.NewAuthUsecase(userRepository, tokenUsecase)
 	authHandler := handler.NewAuthHandler(authUsecase)
 	authDelivery := delivery.NewAuthDelivery(authHandler, authMiddleware)
 
-	rootDelivery := delivery.NewRootDelivery(authDelivery)
+	categoryRepository := repository_impl.NewCategoryRepository(entClient)
+	categoryUsecase := usecase_impl.NewCategoryUsecase(categoryRepository)
+	categoryHandler := adminHandler.NewCategoryHandler(categoryUsecase)
+	categoryDelivery := admin_delivery.NewCategoryDelivery(categoryHandler)
+
+	rootDelivery := delivery.NewRootDelivery(authDelivery, categoryDelivery, authMiddleware)
 	rootDelivery.RegisterRouter(ginEngine)
 }
