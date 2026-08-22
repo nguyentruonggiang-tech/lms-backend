@@ -2,6 +2,8 @@ package middlewares
 
 import (
 	"errors"
+	"lms-backend/ent/users"
+	"lms-backend/internal/common/helpers"
 	"lms-backend/internal/common/response"
 	"lms-backend/internal/repository"
 	"lms-backend/internal/usecase"
@@ -53,5 +55,22 @@ func (a *AuthMiddleware) Protect(ctx *gin.Context) {
 	}
 
 	ctx.Set("user", user)
+	ctx.Next()
+}
+
+func (a *AuthMiddleware) AdminOnly(ctx *gin.Context) {
+	user, err := helpers.GetUser(ctx)
+	if err != nil {
+		ctx.Error(response.NewUnauthorizedException())
+		ctx.Abort()
+		return
+	}
+
+	if user.Role != users.RoleAdmin {
+		ctx.Error(response.NewForbiddenException())
+		ctx.Abort()
+		return
+	}
+
 	ctx.Next()
 }
