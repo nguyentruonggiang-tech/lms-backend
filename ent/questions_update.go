@@ -29,6 +29,26 @@ func (_u *QuestionsUpdate) Where(ps ...predicate.Questions) *QuestionsUpdate {
 	return _u
 }
 
+// SetDeletedAt sets the "deleted_at" field.
+func (_u *QuestionsUpdate) SetDeletedAt(v time.Time) *QuestionsUpdate {
+	_u.mutation.SetDeletedAt(v)
+	return _u
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_u *QuestionsUpdate) SetNillableDeletedAt(v *time.Time) *QuestionsUpdate {
+	if v != nil {
+		_u.SetDeletedAt(*v)
+	}
+	return _u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (_u *QuestionsUpdate) ClearDeletedAt() *QuestionsUpdate {
+	_u.mutation.ClearDeletedAt()
+	return _u
+}
+
 // SetQuizID sets the "quiz_id" field.
 func (_u *QuestionsUpdate) SetQuizID(v int) *QuestionsUpdate {
 	_u.mutation.SetQuizID(v)
@@ -133,26 +153,6 @@ func (_u *QuestionsUpdate) SetUpdatedAt(v time.Time) *QuestionsUpdate {
 	return _u
 }
 
-// SetDeletedAt sets the "deleted_at" field.
-func (_u *QuestionsUpdate) SetDeletedAt(v time.Time) *QuestionsUpdate {
-	_u.mutation.SetDeletedAt(v)
-	return _u
-}
-
-// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (_u *QuestionsUpdate) SetNillableDeletedAt(v *time.Time) *QuestionsUpdate {
-	if v != nil {
-		_u.SetDeletedAt(*v)
-	}
-	return _u
-}
-
-// ClearDeletedAt clears the value of the "deleted_at" field.
-func (_u *QuestionsUpdate) ClearDeletedAt() *QuestionsUpdate {
-	_u.mutation.ClearDeletedAt()
-	return _u
-}
-
 // SetQuizzesID sets the "Quizzes" edge to the Quizzes entity by ID.
 func (_u *QuestionsUpdate) SetQuizzesID(id int) *QuestionsUpdate {
 	_u.mutation.SetQuizzesID(id)
@@ -177,7 +177,9 @@ func (_u *QuestionsUpdate) ClearQuizzes() *QuestionsUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *QuestionsUpdate) Save(ctx context.Context) (int, error) {
-	_u.defaults()
+	if err := _u.defaults(); err != nil {
+		return 0, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -204,11 +206,15 @@ func (_u *QuestionsUpdate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *QuestionsUpdate) defaults() {
+func (_u *QuestionsUpdate) defaults() error {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if questions.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized questions.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := questions.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -236,6 +242,12 @@ func (_u *QuestionsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			}
 		}
 	}
+	if value, ok := _u.mutation.DeletedAt(); ok {
+		_spec.SetField(questions.FieldDeletedAt, field.TypeTime, value)
+	}
+	if _u.mutation.DeletedAtCleared() {
+		_spec.ClearField(questions.FieldDeletedAt, field.TypeTime)
+	}
 	if value, ok := _u.mutation.QuestionText(); ok {
 		_spec.SetField(questions.FieldQuestionText, field.TypeString, value)
 	}
@@ -256,12 +268,6 @@ func (_u *QuestionsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(questions.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if value, ok := _u.mutation.DeletedAt(); ok {
-		_spec.SetField(questions.FieldDeletedAt, field.TypeTime, value)
-	}
-	if _u.mutation.DeletedAtCleared() {
-		_spec.ClearField(questions.FieldDeletedAt, field.TypeTime)
 	}
 	if _u.mutation.QuizzesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -310,6 +316,26 @@ type QuestionsUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *QuestionsMutation
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (_u *QuestionsUpdateOne) SetDeletedAt(v time.Time) *QuestionsUpdateOne {
+	_u.mutation.SetDeletedAt(v)
+	return _u
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_u *QuestionsUpdateOne) SetNillableDeletedAt(v *time.Time) *QuestionsUpdateOne {
+	if v != nil {
+		_u.SetDeletedAt(*v)
+	}
+	return _u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (_u *QuestionsUpdateOne) ClearDeletedAt() *QuestionsUpdateOne {
+	_u.mutation.ClearDeletedAt()
+	return _u
 }
 
 // SetQuizID sets the "quiz_id" field.
@@ -416,26 +442,6 @@ func (_u *QuestionsUpdateOne) SetUpdatedAt(v time.Time) *QuestionsUpdateOne {
 	return _u
 }
 
-// SetDeletedAt sets the "deleted_at" field.
-func (_u *QuestionsUpdateOne) SetDeletedAt(v time.Time) *QuestionsUpdateOne {
-	_u.mutation.SetDeletedAt(v)
-	return _u
-}
-
-// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (_u *QuestionsUpdateOne) SetNillableDeletedAt(v *time.Time) *QuestionsUpdateOne {
-	if v != nil {
-		_u.SetDeletedAt(*v)
-	}
-	return _u
-}
-
-// ClearDeletedAt clears the value of the "deleted_at" field.
-func (_u *QuestionsUpdateOne) ClearDeletedAt() *QuestionsUpdateOne {
-	_u.mutation.ClearDeletedAt()
-	return _u
-}
-
 // SetQuizzesID sets the "Quizzes" edge to the Quizzes entity by ID.
 func (_u *QuestionsUpdateOne) SetQuizzesID(id int) *QuestionsUpdateOne {
 	_u.mutation.SetQuizzesID(id)
@@ -473,7 +479,9 @@ func (_u *QuestionsUpdateOne) Select(field string, fields ...string) *QuestionsU
 
 // Save executes the query and returns the updated Questions entity.
 func (_u *QuestionsUpdateOne) Save(ctx context.Context) (*Questions, error) {
-	_u.defaults()
+	if err := _u.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -500,11 +508,15 @@ func (_u *QuestionsUpdateOne) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *QuestionsUpdateOne) defaults() {
+func (_u *QuestionsUpdateOne) defaults() error {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if questions.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized questions.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := questions.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -549,6 +561,12 @@ func (_u *QuestionsUpdateOne) sqlSave(ctx context.Context) (_node *Questions, er
 			}
 		}
 	}
+	if value, ok := _u.mutation.DeletedAt(); ok {
+		_spec.SetField(questions.FieldDeletedAt, field.TypeTime, value)
+	}
+	if _u.mutation.DeletedAtCleared() {
+		_spec.ClearField(questions.FieldDeletedAt, field.TypeTime)
+	}
 	if value, ok := _u.mutation.QuestionText(); ok {
 		_spec.SetField(questions.FieldQuestionText, field.TypeString, value)
 	}
@@ -569,12 +587,6 @@ func (_u *QuestionsUpdateOne) sqlSave(ctx context.Context) (_node *Questions, er
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(questions.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if value, ok := _u.mutation.DeletedAt(); ok {
-		_spec.SetField(questions.FieldDeletedAt, field.TypeTime, value)
-	}
-	if _u.mutation.DeletedAtCleared() {
-		_spec.ClearField(questions.FieldDeletedAt, field.TypeTime)
 	}
 	if _u.mutation.QuizzesCleared() {
 		edge := &sqlgraph.EdgeSpec{

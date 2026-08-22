@@ -27,6 +27,20 @@ type CoursesCreate struct {
 	hooks    []Hook
 }
 
+// SetDeletedAt sets the "deleted_at" field.
+func (_c *CoursesCreate) SetDeletedAt(v time.Time) *CoursesCreate {
+	_c.mutation.SetDeletedAt(v)
+	return _c
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_c *CoursesCreate) SetNillableDeletedAt(v *time.Time) *CoursesCreate {
+	if v != nil {
+		_c.SetDeletedAt(*v)
+	}
+	return _c
+}
+
 // SetCategoryID sets the "category_id" field.
 func (_c *CoursesCreate) SetCategoryID(v int) *CoursesCreate {
 	_c.mutation.SetCategoryID(v)
@@ -157,20 +171,6 @@ func (_c *CoursesCreate) SetNillableUpdatedAt(v *time.Time) *CoursesCreate {
 	return _c
 }
 
-// SetDeletedAt sets the "deleted_at" field.
-func (_c *CoursesCreate) SetDeletedAt(v time.Time) *CoursesCreate {
-	_c.mutation.SetDeletedAt(v)
-	return _c
-}
-
-// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (_c *CoursesCreate) SetNillableDeletedAt(v *time.Time) *CoursesCreate {
-	if v != nil {
-		_c.SetDeletedAt(*v)
-	}
-	return _c
-}
-
 // SetCategoriesID sets the "Categories" edge to the Categories entity by ID.
 func (_c *CoursesCreate) SetCategoriesID(id int) *CoursesCreate {
 	_c.mutation.SetCategoriesID(id)
@@ -279,7 +279,9 @@ func (_c *CoursesCreate) Mutation() *CoursesMutation {
 
 // Save creates the Courses in the database.
 func (_c *CoursesCreate) Save(ctx context.Context) (*Courses, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -306,7 +308,7 @@ func (_c *CoursesCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *CoursesCreate) defaults() {
+func (_c *CoursesCreate) defaults() error {
 	if _, ok := _c.mutation.Price(); !ok {
 		v := courses.DefaultPrice
 		_c.mutation.SetPrice(v)
@@ -324,13 +326,20 @@ func (_c *CoursesCreate) defaults() {
 		_c.mutation.SetTotalLessons(v)
 	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if courses.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized courses.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := courses.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if courses.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized courses.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := courses.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -401,6 +410,10 @@ func (_c *CoursesCreate) createSpec() (*Courses, *sqlgraph.CreateSpec) {
 		_node = &Courses{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(courses.Table, sqlgraph.NewFieldSpec(courses.FieldID, field.TypeInt))
 	)
+	if value, ok := _c.mutation.DeletedAt(); ok {
+		_spec.SetField(courses.FieldDeletedAt, field.TypeTime, value)
+		_node.DeletedAt = &value
+	}
 	if value, ok := _c.mutation.Title(); ok {
 		_spec.SetField(courses.FieldTitle, field.TypeString, value)
 		_node.Title = value
@@ -440,10 +453,6 @@ func (_c *CoursesCreate) createSpec() (*Courses, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(courses.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
-	}
-	if value, ok := _c.mutation.DeletedAt(); ok {
-		_spec.SetField(courses.FieldDeletedAt, field.TypeTime, value)
-		_node.DeletedAt = &value
 	}
 	if nodes := _c.mutation.CategoriesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

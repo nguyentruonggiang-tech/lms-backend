@@ -335,12 +335,12 @@ func (_q *SectionsQuery) WithLessons(opts ...func(*LessonsQuery)) *SectionsQuery
 // Example:
 //
 //	var v []struct {
-//		CourseID int `json:"course_id,omitempty"`
+//		DeletedAt time.Time `json:"deletedAt"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Sections.Query().
-//		GroupBy(sections.FieldCourseID).
+//		GroupBy(sections.FieldDeletedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *SectionsQuery) GroupBy(field string, fields ...string) *SectionsGroupBy {
@@ -358,11 +358,11 @@ func (_q *SectionsQuery) GroupBy(field string, fields ...string) *SectionsGroupB
 // Example:
 //
 //	var v []struct {
-//		CourseID int `json:"course_id,omitempty"`
+//		DeletedAt time.Time `json:"deletedAt"`
 //	}
 //
 //	client.Sections.Query().
-//		Select(sections.FieldCourseID).
+//		Select(sections.FieldDeletedAt).
 //		Scan(ctx, &v)
 func (_q *SectionsQuery) Select(fields ...string) *SectionsSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

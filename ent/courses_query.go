@@ -515,12 +515,12 @@ func (_q *CoursesQuery) WithCertificates(opts ...func(*CertificatesQuery)) *Cour
 // Example:
 //
 //	var v []struct {
-//		CategoryID int `json:"category_id,omitempty"`
+//		DeletedAt time.Time `json:"deletedAt"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Courses.Query().
-//		GroupBy(courses.FieldCategoryID).
+//		GroupBy(courses.FieldDeletedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *CoursesQuery) GroupBy(field string, fields ...string) *CoursesGroupBy {
@@ -538,11 +538,11 @@ func (_q *CoursesQuery) GroupBy(field string, fields ...string) *CoursesGroupBy 
 // Example:
 //
 //	var v []struct {
-//		CategoryID int `json:"category_id,omitempty"`
+//		DeletedAt time.Time `json:"deletedAt"`
 //	}
 //
 //	client.Courses.Query().
-//		Select(courses.FieldCategoryID).
+//		Select(courses.FieldDeletedAt).
 //		Scan(ctx, &v)
 func (_q *CoursesQuery) Select(fields ...string) *CoursesSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

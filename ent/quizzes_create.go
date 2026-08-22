@@ -24,6 +24,20 @@ type QuizzesCreate struct {
 	hooks    []Hook
 }
 
+// SetDeletedAt sets the "deleted_at" field.
+func (_c *QuizzesCreate) SetDeletedAt(v time.Time) *QuizzesCreate {
+	_c.mutation.SetDeletedAt(v)
+	return _c
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_c *QuizzesCreate) SetNillableDeletedAt(v *time.Time) *QuizzesCreate {
+	if v != nil {
+		_c.SetDeletedAt(*v)
+	}
+	return _c
+}
+
 // SetCourseID sets the "course_id" field.
 func (_c *QuizzesCreate) SetCourseID(v int) *QuizzesCreate {
 	_c.mutation.SetCourseID(v)
@@ -80,20 +94,6 @@ func (_c *QuizzesCreate) SetUpdatedAt(v time.Time) *QuizzesCreate {
 func (_c *QuizzesCreate) SetNillableUpdatedAt(v *time.Time) *QuizzesCreate {
 	if v != nil {
 		_c.SetUpdatedAt(*v)
-	}
-	return _c
-}
-
-// SetDeletedAt sets the "deleted_at" field.
-func (_c *QuizzesCreate) SetDeletedAt(v time.Time) *QuizzesCreate {
-	_c.mutation.SetDeletedAt(v)
-	return _c
-}
-
-// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (_c *QuizzesCreate) SetNillableDeletedAt(v *time.Time) *QuizzesCreate {
-	if v != nil {
-		_c.SetDeletedAt(*v)
 	}
 	return _c
 }
@@ -157,7 +157,9 @@ func (_c *QuizzesCreate) Mutation() *QuizzesMutation {
 
 // Save creates the Quizzes in the database.
 func (_c *QuizzesCreate) Save(ctx context.Context) (*Quizzes, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -184,19 +186,26 @@ func (_c *QuizzesCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *QuizzesCreate) defaults() {
+func (_c *QuizzesCreate) defaults() error {
 	if _, ok := _c.mutation.PassingScore(); !ok {
 		v := quizzes.DefaultPassingScore
 		_c.mutation.SetPassingScore(v)
 	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if quizzes.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized quizzes.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := quizzes.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if quizzes.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized quizzes.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := quizzes.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -251,6 +260,10 @@ func (_c *QuizzesCreate) createSpec() (*Quizzes, *sqlgraph.CreateSpec) {
 		_node = &Quizzes{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(quizzes.Table, sqlgraph.NewFieldSpec(quizzes.FieldID, field.TypeInt))
 	)
+	if value, ok := _c.mutation.DeletedAt(); ok {
+		_spec.SetField(quizzes.FieldDeletedAt, field.TypeTime, value)
+		_node.DeletedAt = &value
+	}
 	if value, ok := _c.mutation.Title(); ok {
 		_spec.SetField(quizzes.FieldTitle, field.TypeString, value)
 		_node.Title = value
@@ -266,10 +279,6 @@ func (_c *QuizzesCreate) createSpec() (*Quizzes, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(quizzes.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
-	}
-	if value, ok := _c.mutation.DeletedAt(); ok {
-		_spec.SetField(quizzes.FieldDeletedAt, field.TypeTime, value)
-		_node.DeletedAt = &value
 	}
 	if nodes := _c.mutation.CoursesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

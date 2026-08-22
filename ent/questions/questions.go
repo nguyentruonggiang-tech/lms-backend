@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -15,6 +16,8 @@ const (
 	Label = "questions"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
+	FieldDeletedAt = "deleted_at"
 	// FieldQuizID holds the string denoting the quiz_id field in the database.
 	FieldQuizID = "quiz_id"
 	// FieldQuestionText holds the string denoting the question_text field in the database.
@@ -33,8 +36,6 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
-	FieldDeletedAt = "deleted_at"
 	// EdgeQuizzes holds the string denoting the quizzes edge name in mutations.
 	EdgeQuizzes = "Quizzes"
 	// Table holds the table name of the questions in the database.
@@ -51,6 +52,7 @@ const (
 // Columns holds all SQL columns for questions fields.
 var Columns = []string{
 	FieldID,
+	FieldDeletedAt,
 	FieldQuizID,
 	FieldQuestionText,
 	FieldOptionA,
@@ -60,7 +62,6 @@ var Columns = []string{
 	FieldCorrectOption,
 	FieldCreatedAt,
 	FieldUpdatedAt,
-	FieldDeletedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -73,7 +74,14 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "lms-backend/ent/runtime"
 var (
+	Hooks        [2]ent.Hook
+	Interceptors [1]ent.Interceptor
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
@@ -113,6 +121,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByDeletedAt orders the results by the deleted_at field.
+func ByDeletedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeletedAt, opts...).ToFunc()
 }
 
 // ByQuizID orders the results by the quiz_id field.
@@ -158,11 +171,6 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updated_at field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
-}
-
-// ByDeletedAt orders the results by the deleted_at field.
-func ByDeletedAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDeletedAt, opts...).ToFunc()
 }
 
 // ByQuizzesField orders the results by Quizzes field.

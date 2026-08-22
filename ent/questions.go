@@ -18,6 +18,8 @@ type Questions struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// DeletedAt holds the value of the "deleted_at" field.
+	DeletedAt *time.Time `json:"deletedAt"`
 	// QuizID holds the value of the "quiz_id" field.
 	QuizID int `json:"quiz_id,omitempty"`
 	// QuestionText holds the value of the "question_text" field.
@@ -36,8 +38,6 @@ type Questions struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// DeletedAt holds the value of the "deleted_at" field.
-	DeletedAt *time.Time `json:"deleted_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the QuestionsQuery when eager-loading is set.
 	Edges        QuestionsEdges `json:"edges"`
@@ -73,7 +73,7 @@ func (*Questions) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case questions.FieldQuestionText, questions.FieldOptionA, questions.FieldOptionB, questions.FieldOptionC, questions.FieldOptionD, questions.FieldCorrectOption:
 			values[i] = new(sql.NullString)
-		case questions.FieldCreatedAt, questions.FieldUpdatedAt, questions.FieldDeletedAt:
+		case questions.FieldDeletedAt, questions.FieldCreatedAt, questions.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -96,6 +96,13 @@ func (_m *Questions) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int(value.Int64)
+		case questions.FieldDeletedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
+			} else if value.Valid {
+				_m.DeletedAt = new(time.Time)
+				*_m.DeletedAt = value.Time
+			}
 		case questions.FieldQuizID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field quiz_id", values[i])
@@ -150,13 +157,6 @@ func (_m *Questions) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
-		case questions.FieldDeletedAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
-			} else if value.Valid {
-				_m.DeletedAt = new(time.Time)
-				*_m.DeletedAt = value.Time
-			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -198,6 +198,11 @@ func (_m *Questions) String() string {
 	var builder strings.Builder
 	builder.WriteString("Questions(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	if v := _m.DeletedAt; v != nil {
+		builder.WriteString("deleted_at=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
+	builder.WriteString(", ")
 	builder.WriteString("quiz_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.QuizID))
 	builder.WriteString(", ")
@@ -224,11 +229,6 @@ func (_m *Questions) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
-	builder.WriteString(", ")
-	if v := _m.DeletedAt; v != nil {
-		builder.WriteString("deleted_at=")
-		builder.WriteString(v.Format(time.ANSIC))
-	}
 	builder.WriteByte(')')
 	return builder.String()
 }

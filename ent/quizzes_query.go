@@ -407,12 +407,12 @@ func (_q *QuizzesQuery) WithQuizAttempts(opts ...func(*QuizAttemptsQuery)) *Quiz
 // Example:
 //
 //	var v []struct {
-//		CourseID int `json:"course_id,omitempty"`
+//		DeletedAt time.Time `json:"deletedAt"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Quizzes.Query().
-//		GroupBy(quizzes.FieldCourseID).
+//		GroupBy(quizzes.FieldDeletedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *QuizzesQuery) GroupBy(field string, fields ...string) *QuizzesGroupBy {
@@ -430,11 +430,11 @@ func (_q *QuizzesQuery) GroupBy(field string, fields ...string) *QuizzesGroupBy 
 // Example:
 //
 //	var v []struct {
-//		CourseID int `json:"course_id,omitempty"`
+//		DeletedAt time.Time `json:"deletedAt"`
 //	}
 //
 //	client.Quizzes.Query().
-//		Select(quizzes.FieldCourseID).
+//		Select(quizzes.FieldDeletedAt).
 //		Scan(ctx, &v)
 func (_q *QuizzesQuery) Select(fields ...string) *QuizzesSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

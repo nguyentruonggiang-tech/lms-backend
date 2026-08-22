@@ -25,6 +25,20 @@ type UsersCreate struct {
 	hooks    []Hook
 }
 
+// SetDeletedAt sets the "deleted_at" field.
+func (_c *UsersCreate) SetDeletedAt(v time.Time) *UsersCreate {
+	_c.mutation.SetDeletedAt(v)
+	return _c
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_c *UsersCreate) SetNillableDeletedAt(v *time.Time) *UsersCreate {
+	if v != nil {
+		_c.SetDeletedAt(*v)
+	}
+	return _c
+}
+
 // SetEmail sets the "email" field.
 func (_c *UsersCreate) SetEmail(v string) *UsersCreate {
 	_c.mutation.SetEmail(v)
@@ -121,20 +135,6 @@ func (_c *UsersCreate) SetNillableUpdatedAt(v *time.Time) *UsersCreate {
 	return _c
 }
 
-// SetDeletedAt sets the "deleted_at" field.
-func (_c *UsersCreate) SetDeletedAt(v time.Time) *UsersCreate {
-	_c.mutation.SetDeletedAt(v)
-	return _c
-}
-
-// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (_c *UsersCreate) SetNillableDeletedAt(v *time.Time) *UsersCreate {
-	if v != nil {
-		_c.SetDeletedAt(*v)
-	}
-	return _c
-}
-
 // AddEnrollmentIDs adds the "Enrollments" edge to the Enrollments entity by IDs.
 func (_c *UsersCreate) AddEnrollmentIDs(ids ...int) *UsersCreate {
 	_c.mutation.AddEnrollmentIDs(ids...)
@@ -217,7 +217,9 @@ func (_c *UsersCreate) Mutation() *UsersMutation {
 
 // Save creates the Users in the database.
 func (_c *UsersCreate) Save(ctx context.Context) (*Users, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -244,7 +246,7 @@ func (_c *UsersCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *UsersCreate) defaults() {
+func (_c *UsersCreate) defaults() error {
 	if _, ok := _c.mutation.Role(); !ok {
 		v := users.DefaultRole
 		_c.mutation.SetRole(v)
@@ -254,13 +256,20 @@ func (_c *UsersCreate) defaults() {
 		_c.mutation.SetStatus(v)
 	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if users.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized users.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := users.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if users.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized users.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := users.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -319,6 +328,10 @@ func (_c *UsersCreate) createSpec() (*Users, *sqlgraph.CreateSpec) {
 		_node = &Users{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(users.Table, sqlgraph.NewFieldSpec(users.FieldID, field.TypeInt))
 	)
+	if value, ok := _c.mutation.DeletedAt(); ok {
+		_spec.SetField(users.FieldDeletedAt, field.TypeTime, value)
+		_node.DeletedAt = &value
+	}
 	if value, ok := _c.mutation.Email(); ok {
 		_spec.SetField(users.FieldEmail, field.TypeString, value)
 		_node.Email = value
@@ -350,10 +363,6 @@ func (_c *UsersCreate) createSpec() (*Users, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(users.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
-	}
-	if value, ok := _c.mutation.DeletedAt(); ok {
-		_spec.SetField(users.FieldDeletedAt, field.TypeTime, value)
-		_node.DeletedAt = &value
 	}
 	if nodes := _c.mutation.EnrollmentsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

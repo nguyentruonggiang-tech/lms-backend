@@ -3,6 +3,8 @@ package schema
 import (
 	"time"
 
+	softdelete "lms-backend/ent/soft-delete"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -20,7 +22,6 @@ func (Users) Fields() []ent.Field {
 		field.Enum("status").Values("active", "blocked").Default("active"),
 		field.Time("created_at").Default(time.Now).Immutable(),
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
-		field.Time("deleted_at").Optional().Nillable(),
 	}
 }
 
@@ -31,5 +32,11 @@ func (Users) Edges() []ent.Edge {
 		edge.To("QuizAttempts", QuizAttempts.Type),
 		edge.To("Certificates", Certificates.Type),
 		edge.To("Notifications", Notifications.Type),
+	}
+}
+
+func (Users) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		softdelete.SoftDeleteMixin{},
 	}
 }

@@ -35,6 +35,26 @@ func (_u *CoursesUpdate) Where(ps ...predicate.Courses) *CoursesUpdate {
 	return _u
 }
 
+// SetDeletedAt sets the "deleted_at" field.
+func (_u *CoursesUpdate) SetDeletedAt(v time.Time) *CoursesUpdate {
+	_u.mutation.SetDeletedAt(v)
+	return _u
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_u *CoursesUpdate) SetNillableDeletedAt(v *time.Time) *CoursesUpdate {
+	if v != nil {
+		_u.SetDeletedAt(*v)
+	}
+	return _u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (_u *CoursesUpdate) ClearDeletedAt() *CoursesUpdate {
+	_u.mutation.ClearDeletedAt()
+	return _u
+}
+
 // SetCategoryID sets the "category_id" field.
 func (_u *CoursesUpdate) SetCategoryID(v int) *CoursesUpdate {
 	_u.mutation.SetCategoryID(v)
@@ -190,26 +210,6 @@ func (_u *CoursesUpdate) AddTotalLessons(v int) *CoursesUpdate {
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *CoursesUpdate) SetUpdatedAt(v time.Time) *CoursesUpdate {
 	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
-// SetDeletedAt sets the "deleted_at" field.
-func (_u *CoursesUpdate) SetDeletedAt(v time.Time) *CoursesUpdate {
-	_u.mutation.SetDeletedAt(v)
-	return _u
-}
-
-// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (_u *CoursesUpdate) SetNillableDeletedAt(v *time.Time) *CoursesUpdate {
-	if v != nil {
-		_u.SetDeletedAt(*v)
-	}
-	return _u
-}
-
-// ClearDeletedAt clears the value of the "deleted_at" field.
-func (_u *CoursesUpdate) ClearDeletedAt() *CoursesUpdate {
-	_u.mutation.ClearDeletedAt()
 	return _u
 }
 
@@ -453,7 +453,9 @@ func (_u *CoursesUpdate) RemoveCertificates(v ...*Certificates) *CoursesUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *CoursesUpdate) Save(ctx context.Context) (int, error) {
-	_u.defaults()
+	if err := _u.defaults(); err != nil {
+		return 0, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -480,11 +482,15 @@ func (_u *CoursesUpdate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *CoursesUpdate) defaults() {
+func (_u *CoursesUpdate) defaults() error {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if courses.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized courses.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := courses.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -516,6 +522,12 @@ func (_u *CoursesUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.DeletedAt(); ok {
+		_spec.SetField(courses.FieldDeletedAt, field.TypeTime, value)
+	}
+	if _u.mutation.DeletedAtCleared() {
+		_spec.ClearField(courses.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.Title(); ok {
 		_spec.SetField(courses.FieldTitle, field.TypeString, value)
@@ -555,12 +567,6 @@ func (_u *CoursesUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(courses.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if value, ok := _u.mutation.DeletedAt(); ok {
-		_spec.SetField(courses.FieldDeletedAt, field.TypeTime, value)
-	}
-	if _u.mutation.DeletedAtCleared() {
-		_spec.ClearField(courses.FieldDeletedAt, field.TypeTime)
 	}
 	if _u.mutation.CategoriesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -881,6 +887,26 @@ type CoursesUpdateOne struct {
 	mutation *CoursesMutation
 }
 
+// SetDeletedAt sets the "deleted_at" field.
+func (_u *CoursesUpdateOne) SetDeletedAt(v time.Time) *CoursesUpdateOne {
+	_u.mutation.SetDeletedAt(v)
+	return _u
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_u *CoursesUpdateOne) SetNillableDeletedAt(v *time.Time) *CoursesUpdateOne {
+	if v != nil {
+		_u.SetDeletedAt(*v)
+	}
+	return _u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (_u *CoursesUpdateOne) ClearDeletedAt() *CoursesUpdateOne {
+	_u.mutation.ClearDeletedAt()
+	return _u
+}
+
 // SetCategoryID sets the "category_id" field.
 func (_u *CoursesUpdateOne) SetCategoryID(v int) *CoursesUpdateOne {
 	_u.mutation.SetCategoryID(v)
@@ -1036,26 +1062,6 @@ func (_u *CoursesUpdateOne) AddTotalLessons(v int) *CoursesUpdateOne {
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *CoursesUpdateOne) SetUpdatedAt(v time.Time) *CoursesUpdateOne {
 	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
-// SetDeletedAt sets the "deleted_at" field.
-func (_u *CoursesUpdateOne) SetDeletedAt(v time.Time) *CoursesUpdateOne {
-	_u.mutation.SetDeletedAt(v)
-	return _u
-}
-
-// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (_u *CoursesUpdateOne) SetNillableDeletedAt(v *time.Time) *CoursesUpdateOne {
-	if v != nil {
-		_u.SetDeletedAt(*v)
-	}
-	return _u
-}
-
-// ClearDeletedAt clears the value of the "deleted_at" field.
-func (_u *CoursesUpdateOne) ClearDeletedAt() *CoursesUpdateOne {
-	_u.mutation.ClearDeletedAt()
 	return _u
 }
 
@@ -1312,7 +1318,9 @@ func (_u *CoursesUpdateOne) Select(field string, fields ...string) *CoursesUpdat
 
 // Save executes the query and returns the updated Courses entity.
 func (_u *CoursesUpdateOne) Save(ctx context.Context) (*Courses, error) {
-	_u.defaults()
+	if err := _u.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -1339,11 +1347,15 @@ func (_u *CoursesUpdateOne) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *CoursesUpdateOne) defaults() {
+func (_u *CoursesUpdateOne) defaults() error {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if courses.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized courses.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := courses.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -1393,6 +1405,12 @@ func (_u *CoursesUpdateOne) sqlSave(ctx context.Context) (_node *Courses, err er
 			}
 		}
 	}
+	if value, ok := _u.mutation.DeletedAt(); ok {
+		_spec.SetField(courses.FieldDeletedAt, field.TypeTime, value)
+	}
+	if _u.mutation.DeletedAtCleared() {
+		_spec.ClearField(courses.FieldDeletedAt, field.TypeTime)
+	}
 	if value, ok := _u.mutation.Title(); ok {
 		_spec.SetField(courses.FieldTitle, field.TypeString, value)
 	}
@@ -1431,12 +1449,6 @@ func (_u *CoursesUpdateOne) sqlSave(ctx context.Context) (_node *Courses, err er
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(courses.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if value, ok := _u.mutation.DeletedAt(); ok {
-		_spec.SetField(courses.FieldDeletedAt, field.TypeTime, value)
-	}
-	if _u.mutation.DeletedAtCleared() {
-		_spec.ClearField(courses.FieldDeletedAt, field.TypeTime)
 	}
 	if _u.mutation.CategoriesCleared() {
 		edge := &sqlgraph.EdgeSpec{

@@ -1,0 +1,96 @@
+package softdelete
+
+import (
+	"context"
+	"fmt"
+	"time"
+
+	gen "lms-backend/ent"
+	"lms-backend/ent/hook"
+	"lms-backend/ent/intercept"
+
+	"entgo.io/ent"
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/mixin"
+)
+
+type SoftDeleteMixin struct {
+	mixin.Schema
+}
+
+func (SoftDeleteMixin) Fields() []ent.Field {
+	return []ent.Field{
+		field.Time("deleted_at").Optional().Nillable().StructTag(`json:"deletedAt"`),
+	}
+}
+
+type softDeleteKey struct{}
+
+func SkipSoftDelete(parent context.Context) context.Context {
+	return context.WithValue(parent, softDeleteKey{}, true)
+}
+
+func (d SoftDeleteMixin) Interceptors() []ent.Interceptor {
+	return []ent.Interceptor{
+		intercept.TraverseFunc(func(ctx context.Context, q intercept.Query) error {
+			if skip, _ := ctx.Value(softDeleteKey{}).(bool); skip {
+				return nil
+			}
+			d.P(q)
+			return nil
+		}),
+	}
+}
+
+func (d SoftDeleteMixin) Hooks() []ent.Hook {
+	return []ent.Hook{
+		hook.On(
+			func(next ent.Mutator) ent.Mutator {
+				return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+					if skip, _ := ctx.Value(softDeleteKey{}).(bool); skip {
+						return next.Mutate(ctx, m)
+					}
+					mx, ok := m.(interface {
+						SetOp(ent.Op)
+						Client() *gen.Client
+						SetDeletedAt(time.Time)
+						WhereP(...func(*sql.Selector))
+					})
+					if !ok {
+						return nil, fmt.Errorf("unexpected mutation type %T", m)
+					}
+					d.P(mx)
+					mx.SetOp(ent.OpUpdate)
+					mx.SetDeletedAt(time.Now())
+					return mx.Client().Mutate(ctx, m)
+				})
+			},
+			ent.OpDeleteOne|ent.OpDelete,
+		),
+		hook.On(
+			func(next ent.Mutator) ent.Mutator {
+				return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+					if skip, _ := ctx.Value(softDeleteKey{}).(bool); skip {
+						return next.Mutate(ctx, m)
+					}
+					mx, ok := m.(interface {
+						WhereP(...func(*sql.Selector))
+					})
+					if !ok {
+						return nil, fmt.Errorf("unexpected mutation type %T", m)
+					}
+					d.P(mx)
+					return next.Mutate(ctx, m)
+				})
+			},
+			ent.OpUpdateOne|ent.OpUpdate,
+		),
+	}
+}
+
+func (d SoftDeleteMixin) P(w interface{ WhereP(...func(*sql.Selector)) }) {
+	w.WhereP(
+		sql.FieldIsNull(d.Fields()[0].Descriptor().Name),
+	)
+}

@@ -299,12 +299,12 @@ func (_q *CategoriesQuery) WithCourses(opts ...func(*CoursesQuery)) *CategoriesQ
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		DeletedAt time.Time `json:"deletedAt"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Categories.Query().
-//		GroupBy(categories.FieldName).
+//		GroupBy(categories.FieldDeletedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *CategoriesQuery) GroupBy(field string, fields ...string) *CategoriesGroupBy {
@@ -322,11 +322,11 @@ func (_q *CategoriesQuery) GroupBy(field string, fields ...string) *CategoriesGr
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		DeletedAt time.Time `json:"deletedAt"`
 //	}
 //
 //	client.Categories.Query().
-//		Select(categories.FieldName).
+//		Select(categories.FieldDeletedAt).
 //		Scan(ctx, &v)
 func (_q *CategoriesQuery) Select(fields ...string) *CategoriesSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

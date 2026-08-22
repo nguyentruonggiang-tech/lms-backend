@@ -443,12 +443,12 @@ func (_q *UsersQuery) WithNotifications(opts ...func(*NotificationsQuery)) *User
 // Example:
 //
 //	var v []struct {
-//		Email string `json:"email,omitempty"`
+//		DeletedAt time.Time `json:"deletedAt"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Users.Query().
-//		GroupBy(users.FieldEmail).
+//		GroupBy(users.FieldDeletedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *UsersQuery) GroupBy(field string, fields ...string) *UsersGroupBy {
@@ -466,11 +466,11 @@ func (_q *UsersQuery) GroupBy(field string, fields ...string) *UsersGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Email string `json:"email,omitempty"`
+//		DeletedAt time.Time `json:"deletedAt"`
 //	}
 //
 //	client.Users.Query().
-//		Select(users.FieldEmail).
+//		Select(users.FieldDeletedAt).
 //		Scan(ctx, &v)
 func (_q *UsersQuery) Select(fields ...string) *UsersSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

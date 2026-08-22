@@ -33,6 +33,26 @@ func (_u *UsersUpdate) Where(ps ...predicate.Users) *UsersUpdate {
 	return _u
 }
 
+// SetDeletedAt sets the "deleted_at" field.
+func (_u *UsersUpdate) SetDeletedAt(v time.Time) *UsersUpdate {
+	_u.mutation.SetDeletedAt(v)
+	return _u
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_u *UsersUpdate) SetNillableDeletedAt(v *time.Time) *UsersUpdate {
+	if v != nil {
+		_u.SetDeletedAt(*v)
+	}
+	return _u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (_u *UsersUpdate) ClearDeletedAt() *UsersUpdate {
+	_u.mutation.ClearDeletedAt()
+	return _u
+}
+
 // SetEmail sets the "email" field.
 func (_u *UsersUpdate) SetEmail(v string) *UsersUpdate {
 	_u.mutation.SetEmail(v)
@@ -132,26 +152,6 @@ func (_u *UsersUpdate) SetNillableStatus(v *users.Status) *UsersUpdate {
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *UsersUpdate) SetUpdatedAt(v time.Time) *UsersUpdate {
 	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
-// SetDeletedAt sets the "deleted_at" field.
-func (_u *UsersUpdate) SetDeletedAt(v time.Time) *UsersUpdate {
-	_u.mutation.SetDeletedAt(v)
-	return _u
-}
-
-// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (_u *UsersUpdate) SetNillableDeletedAt(v *time.Time) *UsersUpdate {
-	if v != nil {
-		_u.SetDeletedAt(*v)
-	}
-	return _u
-}
-
-// ClearDeletedAt clears the value of the "deleted_at" field.
-func (_u *UsersUpdate) ClearDeletedAt() *UsersUpdate {
-	_u.mutation.ClearDeletedAt()
 	return _u
 }
 
@@ -342,7 +342,9 @@ func (_u *UsersUpdate) RemoveNotifications(v ...*Notifications) *UsersUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *UsersUpdate) Save(ctx context.Context) (int, error) {
-	_u.defaults()
+	if err := _u.defaults(); err != nil {
+		return 0, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -369,11 +371,15 @@ func (_u *UsersUpdate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *UsersUpdate) defaults() {
+func (_u *UsersUpdate) defaults() error {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if users.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized users.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := users.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -403,6 +409,12 @@ func (_u *UsersUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			}
 		}
 	}
+	if value, ok := _u.mutation.DeletedAt(); ok {
+		_spec.SetField(users.FieldDeletedAt, field.TypeTime, value)
+	}
+	if _u.mutation.DeletedAtCleared() {
+		_spec.ClearField(users.FieldDeletedAt, field.TypeTime)
+	}
 	if value, ok := _u.mutation.Email(); ok {
 		_spec.SetField(users.FieldEmail, field.TypeString, value)
 	}
@@ -429,12 +441,6 @@ func (_u *UsersUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(users.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if value, ok := _u.mutation.DeletedAt(); ok {
-		_spec.SetField(users.FieldDeletedAt, field.TypeTime, value)
-	}
-	if _u.mutation.DeletedAtCleared() {
-		_spec.ClearField(users.FieldDeletedAt, field.TypeTime)
 	}
 	if _u.mutation.EnrollmentsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -681,6 +687,26 @@ type UsersUpdateOne struct {
 	mutation *UsersMutation
 }
 
+// SetDeletedAt sets the "deleted_at" field.
+func (_u *UsersUpdateOne) SetDeletedAt(v time.Time) *UsersUpdateOne {
+	_u.mutation.SetDeletedAt(v)
+	return _u
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_u *UsersUpdateOne) SetNillableDeletedAt(v *time.Time) *UsersUpdateOne {
+	if v != nil {
+		_u.SetDeletedAt(*v)
+	}
+	return _u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (_u *UsersUpdateOne) ClearDeletedAt() *UsersUpdateOne {
+	_u.mutation.ClearDeletedAt()
+	return _u
+}
+
 // SetEmail sets the "email" field.
 func (_u *UsersUpdateOne) SetEmail(v string) *UsersUpdateOne {
 	_u.mutation.SetEmail(v)
@@ -780,26 +806,6 @@ func (_u *UsersUpdateOne) SetNillableStatus(v *users.Status) *UsersUpdateOne {
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *UsersUpdateOne) SetUpdatedAt(v time.Time) *UsersUpdateOne {
 	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
-// SetDeletedAt sets the "deleted_at" field.
-func (_u *UsersUpdateOne) SetDeletedAt(v time.Time) *UsersUpdateOne {
-	_u.mutation.SetDeletedAt(v)
-	return _u
-}
-
-// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (_u *UsersUpdateOne) SetNillableDeletedAt(v *time.Time) *UsersUpdateOne {
-	if v != nil {
-		_u.SetDeletedAt(*v)
-	}
-	return _u
-}
-
-// ClearDeletedAt clears the value of the "deleted_at" field.
-func (_u *UsersUpdateOne) ClearDeletedAt() *UsersUpdateOne {
-	_u.mutation.ClearDeletedAt()
 	return _u
 }
 
@@ -1003,7 +1009,9 @@ func (_u *UsersUpdateOne) Select(field string, fields ...string) *UsersUpdateOne
 
 // Save executes the query and returns the updated Users entity.
 func (_u *UsersUpdateOne) Save(ctx context.Context) (*Users, error) {
-	_u.defaults()
+	if err := _u.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -1030,11 +1038,15 @@ func (_u *UsersUpdateOne) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *UsersUpdateOne) defaults() {
+func (_u *UsersUpdateOne) defaults() error {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		if users.UpdateDefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized users.UpdateDefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := users.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -1081,6 +1093,12 @@ func (_u *UsersUpdateOne) sqlSave(ctx context.Context) (_node *Users, err error)
 			}
 		}
 	}
+	if value, ok := _u.mutation.DeletedAt(); ok {
+		_spec.SetField(users.FieldDeletedAt, field.TypeTime, value)
+	}
+	if _u.mutation.DeletedAtCleared() {
+		_spec.ClearField(users.FieldDeletedAt, field.TypeTime)
+	}
 	if value, ok := _u.mutation.Email(); ok {
 		_spec.SetField(users.FieldEmail, field.TypeString, value)
 	}
@@ -1107,12 +1125,6 @@ func (_u *UsersUpdateOne) sqlSave(ctx context.Context) (_node *Users, err error)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(users.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if value, ok := _u.mutation.DeletedAt(); ok {
-		_spec.SetField(users.FieldDeletedAt, field.TypeTime, value)
-	}
-	if _u.mutation.DeletedAtCleared() {
-		_spec.ClearField(users.FieldDeletedAt, field.TypeTime)
 	}
 	if _u.mutation.EnrollmentsCleared() {
 		edge := &sqlgraph.EdgeSpec{

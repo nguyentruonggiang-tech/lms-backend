@@ -11,12 +11,12 @@ var (
 	// CategoriesColumns holds the columns for the "categories" table.
 	CategoriesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "slug", Type: field.TypeString, Unique: true},
 		{Name: "description", Type: field.TypeString, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 	}
 	// CategoriesTable holds the schema information for the "categories" table.
 	CategoriesTable = &schema.Table{
@@ -56,6 +56,7 @@ var (
 	// CoursesColumns holds the columns for the "courses" table.
 	CoursesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "title", Type: field.TypeString},
 		{Name: "slug", Type: field.TypeString, Unique: true},
 		{Name: "description", Type: field.TypeString, Nullable: true, Size: 2147483647},
@@ -66,7 +67,6 @@ var (
 		{Name: "total_lessons", Type: field.TypeInt, Default: 0},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "category_id", Type: field.TypeInt},
 	}
 	// CoursesTable holds the schema information for the "courses" table.
@@ -155,6 +155,7 @@ var (
 	// LessonsColumns holds the columns for the "lessons" table.
 	LessonsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "title", Type: field.TypeString},
 		{Name: "content", Type: field.TypeString, Nullable: true, Size: 2147483647},
 		{Name: "video_url", Type: field.TypeString, Nullable: true},
@@ -163,7 +164,6 @@ var (
 		{Name: "is_preview", Type: field.TypeBool, Default: false},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "course_id", Type: field.TypeInt},
 		{Name: "section_id", Type: field.TypeInt},
 	}
@@ -213,6 +213,7 @@ var (
 	// QuestionsColumns holds the columns for the "questions" table.
 	QuestionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "question_text", Type: field.TypeString, Size: 2147483647},
 		{Name: "option_a", Type: field.TypeString},
 		{Name: "option_b", Type: field.TypeString},
@@ -221,7 +222,6 @@ var (
 		{Name: "correct_option", Type: field.TypeEnum, Enums: []string{"A", "B", "C", "D"}},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "quiz_id", Type: field.TypeInt},
 	}
 	// QuestionsTable holds the schema information for the "questions" table.
@@ -272,11 +272,11 @@ var (
 	// QuizzesColumns holds the columns for the "quizzes" table.
 	QuizzesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "title", Type: field.TypeString},
 		{Name: "passing_score", Type: field.TypeInt, Default: 70},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "course_id", Type: field.TypeInt},
 		{Name: "lesson_id", Type: field.TypeInt},
 	}
@@ -303,11 +303,11 @@ var (
 	// SectionsColumns holds the columns for the "sections" table.
 	SectionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "title", Type: field.TypeString},
 		{Name: "sort_order", Type: field.TypeInt, Default: 0},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "course_id", Type: field.TypeInt},
 	}
 	// SectionsTable holds the schema information for the "sections" table.
@@ -327,6 +327,7 @@ var (
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "email", Type: field.TypeString, Unique: true},
 		{Name: "password", Type: field.TypeString},
 		{Name: "full_name", Type: field.TypeString, Nullable: true},
@@ -335,7 +336,6 @@ var (
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "blocked"}, Default: "active"},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
