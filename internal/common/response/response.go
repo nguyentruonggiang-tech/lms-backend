@@ -15,6 +15,11 @@ type errorRes struct {
 	Message string `json:"message"`
 }
 
+type SuccessFormat[T any] struct {
+	Data    T      `json:"data"`
+	Message string `json:"message"`
+}
+
 func Success(data any, message string, code int, ctx *gin.Context) {
 	if code == 0 {
 		code = http.StatusOK

@@ -7,6 +7,7 @@ import (
 	"lms-backend/internal/common/env"
 	"lms-backend/internal/common/middlewares"
 	"lms-backend/internal/common/response"
+	"lms-backend/internal/common/swagger"
 	"lms-backend/internal/di"
 
 	"github.com/gin-contrib/cors"
@@ -36,6 +37,7 @@ func NewApp() *App {
 
 	entClient := ent_client.New(e)
 	di.Injection(r, entClient, e)
+	swagger.Start(r)
 
 	return &App{ginEngine: r, env: e}
 }
