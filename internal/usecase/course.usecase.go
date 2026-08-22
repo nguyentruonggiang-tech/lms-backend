@@ -1,0 +1,14 @@
+package usecase
+
+import (
+	"context"
+	"lms-backend/internal/dto"
+)
+
+type CourseUsecase interface {
+	Create(ctx context.Context, body dto.CourseCreateReq) (any, error)
+	FindAll(ctx context.Context, page, limit string) (any, error)
+	FindByID(ctx context.Context, id int) (any, error)
+	Update(ctx context.Context, id int, body dto.CourseUpdateReq) (any, error)
+	Delete(ctx context.Context, id int) (any, error)
+}

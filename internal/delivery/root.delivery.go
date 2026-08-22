@@ -10,17 +10,20 @@ import (
 type rootDelivery struct {
 	authDelivery     *authDelivery
 	categoryDelivery *admin_delivery.CategoryDelivery
+	courseDelivery   *admin_delivery.CourseDelivery
 	authMiddleware   *middlewares.AuthMiddleware
 }
 
 func NewRootDelivery(
 	authDelivery *authDelivery,
 	categoryDelivery *admin_delivery.CategoryDelivery,
+	courseDelivery *admin_delivery.CourseDelivery,
 	authMiddleware *middlewares.AuthMiddleware,
 ) *rootDelivery {
 	return &rootDelivery{
 		authDelivery:     authDelivery,
 		categoryDelivery: categoryDelivery,
+		courseDelivery:   courseDelivery,
 		authMiddleware:   authMiddleware,
 	}
 }
@@ -34,6 +37,7 @@ func (r *rootDelivery) RegisterRouter(ginEngine *gin.Engine) {
 		adminGroup.Use(r.authMiddleware.Protect, r.authMiddleware.AdminOnly)
 		{
 			r.categoryDelivery.RegisterRouter(adminGroup)
+			r.courseDelivery.RegisterRouter(adminGroup)
 		}
 	}
 }
