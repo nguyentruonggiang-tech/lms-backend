@@ -72,6 +72,11 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	lessonProgressHandler := handler.NewLessonProgressHandler(lessonProgressUsecase)
 	lessonProgressDelivery := delivery.NewLessonProgressDelivery(lessonProgressHandler)
 
-	rootDelivery := delivery.NewRootDelivery(authDelivery, categoryDelivery, publicCourseDelivery, enrollmentDelivery, lessonProgressDelivery, adminCategoryDelivery, adminCourseDelivery, adminSectionDelivery, adminLessonDelivery, adminUserDelivery, adminQuizDelivery, adminQuestionDelivery, authMiddleware)
+	quizAttemptRepository := repository_impl.NewQuizAttemptRepository(entClient)
+	quizClientUsecase := usecase_impl.NewQuizClientUsecase(quizRepository, questionRepository, quizAttemptRepository, enrollmentRepository)
+	quizClientHandler := handler.NewQuizClientHandler(quizClientUsecase)
+	quizClientDelivery := delivery.NewQuizClientDelivery(quizClientHandler)
+
+	rootDelivery := delivery.NewRootDelivery(authDelivery, categoryDelivery, publicCourseDelivery, enrollmentDelivery, lessonProgressDelivery, quizClientDelivery, adminCategoryDelivery, adminCourseDelivery, adminSectionDelivery, adminLessonDelivery, adminUserDelivery, adminQuizDelivery, adminQuestionDelivery, authMiddleware)
 	rootDelivery.RegisterRouter(ginEngine)
 }

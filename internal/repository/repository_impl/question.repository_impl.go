@@ -43,6 +43,12 @@ func (r *questionRepository) CountByQuizID(ctx context.Context, quizID int) (int
 		Count(ctx)
 }
 
+func (r *questionRepository) FindAllByQuizID(ctx context.Context, quizID int) ([]*ent.Questions, error) {
+	return r.client.Questions.Query().
+		Where(questions.QuizIDEQ(quizID)).
+		All(ctx)
+}
+
 func (r *questionRepository) Update(ctx context.Context, id int, body dto.QuestionUpdateReq) (*ent.Questions, error) {
 	q := r.client.Questions.UpdateOneID(id)
 
