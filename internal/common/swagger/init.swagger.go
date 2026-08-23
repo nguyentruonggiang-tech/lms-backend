@@ -55,6 +55,7 @@ func Start(ginEngine *gin.Engine) {
 			auth,
 			category,
 			course,
+			enrollment,
 			adminCategory,
 			adminCourse,
 			adminSection,
