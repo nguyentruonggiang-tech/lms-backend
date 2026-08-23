@@ -2,9 +2,11 @@ package usecase_impl
 
 import (
 	"context"
+	"fmt"
 	"math"
 
 	"lms-api/internal/common/pagination"
+	"lms-api/internal/common/rabbitmq"
 	"lms-api/internal/common/response"
 	"lms-api/internal/dto"
 	"lms-api/internal/repository"
@@ -14,17 +16,25 @@ import (
 type enrollmentUsecase struct {
 	enrollmentRepository repository.EnrollmentRepository
 	courseRepository     repository.CourseRepository
+	rabbitmq             *rabbitmq.RabbitMQ
 }
 
-func NewEnrollmentUsecase(enrollmentRepository repository.EnrollmentRepository, courseRepository repository.CourseRepository) usecase.EnrollmentUsecase {
+func NewEnrollmentUsecase(enrollmentRepository repository.EnrollmentRepository, courseRepository repository.CourseRepository, rabbitmq *rabbitmq.RabbitMQ) usecase.EnrollmentUsecase {
 	return &enrollmentUsecase{
 		enrollmentRepository: enrollmentRepository,
 		courseRepository:     courseRepository,
+		rabbitmq:             rabbitmq,
 	}
 }
 
+type courseEnrolledPayload struct {
+	UserID  int    `json:"userId"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
+}
+
 func (u *enrollmentUsecase) Enroll(ctx context.Context, userID int, body dto.EnrollReq) (any, error) {
-	_, err := u.courseRepository.FindPublishedByID(ctx, body.CourseID)
+	course, err := u.courseRepository.FindPublishedByID(ctx, body.CourseID)
 	if err != nil {
 		return nil, response.NewNotFoundException("course not found")
 	}
@@ -41,6 +51,13 @@ func (u *enrollmentUsecase) Enroll(ctx context.Context, userID int, body dto.Enr
 	if err != nil {
 		return nil, response.NewBadRequestException(err.Error())
 	}
+
+	_ = u.rabbitmq.Send(ctx, "notification.course_enrolled", courseEnrolledPayload{
+		UserID:  userID,
+		Title:   "Đăng ký khóa học thành công",
+		Content: fmt.Sprintf("Bạn đã đăng ký thành công khóa học \"%s\"", course.Title),
+	})
+
 	return data, nil
 }
 

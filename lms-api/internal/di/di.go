@@ -6,6 +6,7 @@ import (
 	"lms-api/internal/common/elastic"
 	"lms-api/internal/common/env"
 	"lms-api/internal/common/middlewares"
+	"lms-api/internal/common/rabbitmq"
 	"lms-api/internal/delivery"
 	adminDelivery "lms-api/internal/delivery/admin"
 	"lms-api/internal/handler"
@@ -20,6 +21,7 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	tokenUsecase := usecase_impl.NewTokenUsecase(e)
 	redisClient := cache.NewRedisClient(e)
 	elasticClient := elastic.NewElasticClient(e)
+	rabbitmqClient := rabbitmq.NewRabbitMQ(e)
 
 	userRepository := repository_impl.NewUserRepository(entClient)
 	authMiddleware := middlewares.NewAuthMiddleware(tokenUsecase, userRepository)
@@ -67,7 +69,7 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	adminQuestionDelivery := adminDelivery.NewQuestionDelivery(adminQuestionHandler)
 
 	enrollmentRepository := repository_impl.NewEnrollmentRepository(entClient)
-	enrollmentUsecase := usecase_impl.NewEnrollmentUsecase(enrollmentRepository, courseRepository)
+	enrollmentUsecase := usecase_impl.NewEnrollmentUsecase(enrollmentRepository, courseRepository, rabbitmqClient)
 	enrollmentHandler := handler.NewEnrollmentHandler(enrollmentUsecase)
 	enrollmentDelivery := delivery.NewEnrollmentDelivery(enrollmentHandler)
 
