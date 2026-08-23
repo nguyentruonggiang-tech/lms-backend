@@ -30,8 +30,10 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 
 	categoryRepository := repository_impl.NewCategoryRepository(entClient)
 	categoryUsecase := usecase_impl.NewCategoryUsecase(categoryRepository)
-	categoryHandler := adminHandler.NewCategoryHandler(categoryUsecase)
-	categoryDelivery := admin_delivery.NewCategoryDelivery(categoryHandler)
+	categoryHandler := handler.NewCategoryHandler(categoryUsecase)
+	categoryDelivery := delivery.NewCategoryDelivery(categoryHandler)
+	adminCategoryHandler := adminHandler.NewCategoryHandler(categoryUsecase)
+	adminCategoryDelivery := admin_delivery.NewCategoryDelivery(adminCategoryHandler)
 
 	courseRepository := repository_impl.NewCourseRepository(entClient)
 	courseUsecase := usecase_impl.NewCourseUsecase(courseRepository)
@@ -58,6 +60,6 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	adminQuestionHandler := adminHandler.NewQuestionHandler(questionUsecase)
 	adminQuestionDelivery := admin_delivery.NewQuestionDelivery(adminQuestionHandler)
 
-	rootDelivery := delivery.NewRootDelivery(authDelivery, categoryDelivery, adminCourseDelivery, adminSectionDelivery, adminLessonDelivery, adminUserDelivery, adminQuizDelivery, adminQuestionDelivery, authMiddleware)
+	rootDelivery := delivery.NewRootDelivery(authDelivery, categoryDelivery, adminCategoryDelivery, adminCourseDelivery, adminSectionDelivery, adminLessonDelivery, adminUserDelivery, adminQuizDelivery, adminQuestionDelivery, authMiddleware)
 	rootDelivery.RegisterRouter(ginEngine)
 }
