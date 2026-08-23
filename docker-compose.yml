@@ -21,9 +21,32 @@ services:
     networks:
       - lms-network
 
+  lms-elasticsearch:
+    container_name: lms-elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+    volumes:
+      - lms-elasticsearch:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    mem_limit: 1g
+    networks:
+      - lms-network
+
+  lms-kibana:
+    container_name: lms-kibana
+    image: docker.elastic.co/kibana/kibana:8.13.0
+    ports:
+      - "5601:5601"
+    networks:
+      - lms-network
+
 networks:
   lms-network:
     driver: bridge
 
 volumes:
   lms-mysql:
+  lms-elasticsearch:

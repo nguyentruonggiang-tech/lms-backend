@@ -23,6 +23,11 @@ type Env struct {
 
 	RedisAddr string
 	RedisPass string
+
+	ElasticAddrs           string
+	ElasticUser            string
+	ElasticPassword        string
+	ElasticCertFingerprint string
 }
 
 func New() *Env {
@@ -37,8 +42,12 @@ func New() *Env {
 		ExpiresAtAccessToken:  parseDuration("EXPIRES_AT_ACCESS_TOKEN"),
 		SecretRefreshToken:    os.Getenv("SECRET_REFRESH_TOKEN"),
 		ExpiresAtRefreshToken: parseDuration("EXPIRES_AT_REFRESH_TOKEN"),
-		RedisAddr:             os.Getenv("REDIS_ADDR"),
-		RedisPass:             os.Getenv("REDIS_PASS"),
+		RedisAddr:              os.Getenv("REDIS_ADDR"),
+		RedisPass:              os.Getenv("REDIS_PASS"),
+		ElasticAddrs:           os.Getenv("ELASTIC_ADDRS"),
+		ElasticUser:            os.Getenv("ELASTIC_USER"),
+		ElasticPassword:        os.Getenv("ELASTIC_PASSWORD"),
+		ElasticCertFingerprint: os.Getenv("ELASTIC_CERT_FINGERPRINT"),
 	}
 
 	fmt.Println("✅ [ENV] Loaded")
