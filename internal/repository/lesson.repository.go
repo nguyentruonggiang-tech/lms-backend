@@ -14,4 +14,5 @@ type LessonRepository interface {
 	FindByID(ctx context.Context, id int) (*ent.Lessons, error)
 	Update(ctx context.Context, id int, body dto.LessonUpdateReq) (*ent.Lessons, error)
 	Delete(ctx context.Context, id int) error
+	FindPreviewByCourseID(ctx context.Context, courseID int) ([]*ent.Lessons, error)
 }
