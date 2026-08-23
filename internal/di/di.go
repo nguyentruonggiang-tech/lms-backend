@@ -2,6 +2,7 @@ package di
 
 import (
 	"lms-backend/ent"
+	"lms-backend/internal/common/cache"
 	"lms-backend/internal/common/env"
 	"lms-backend/internal/common/middlewares"
 	"lms-backend/internal/delivery"
@@ -16,11 +17,12 @@ import (
 
 func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	tokenUsecase := usecase_impl.NewTokenUsecase(e)
+	redisClient := cache.NewRedisClient(e)
 
 	userRepository := repository_impl.NewUserRepository(entClient)
 	authMiddleware := middlewares.NewAuthMiddleware(tokenUsecase, userRepository)
 
-	authUsecase := usecase_impl.NewAuthUsecase(userRepository, tokenUsecase)
+	authUsecase := usecase_impl.NewAuthUsecase(userRepository, tokenUsecase, redisClient, e)
 	authHandler := handler.NewAuthHandler(authUsecase)
 	authDelivery := delivery.NewAuthDelivery(authHandler, authMiddleware)
 
@@ -36,17 +38,17 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	adminCategoryDelivery := adminDelivery.NewCategoryDelivery(adminCategoryHandler)
 
 	sectionRepository := repository_impl.NewSectionRepository(entClient)
-	sectionUsecase := usecase_impl.NewSectionUsecase(sectionRepository)
+	sectionUsecase := usecase_impl.NewSectionUsecase(sectionRepository, redisClient)
 	adminSectionHandler := adminHandler.NewSectionHandler(sectionUsecase)
 	adminSectionDelivery := adminDelivery.NewSectionDelivery(adminSectionHandler)
 
 	lessonRepository := repository_impl.NewLessonRepository(entClient)
-	lessonUsecase := usecase_impl.NewLessonUsecase(lessonRepository, sectionRepository)
+	lessonUsecase := usecase_impl.NewLessonUsecase(lessonRepository, sectionRepository, redisClient)
 	adminLessonHandler := adminHandler.NewLessonHandler(lessonUsecase)
 	adminLessonDelivery := adminDelivery.NewLessonDelivery(adminLessonHandler)
 
 	courseRepository := repository_impl.NewCourseRepository(entClient)
-	courseUsecase := usecase_impl.NewCourseUsecase(courseRepository, lessonRepository)
+	courseUsecase := usecase_impl.NewCourseUsecase(courseRepository, lessonRepository, redisClient)
 	publicCourseHandler := handler.NewCourseHandler(courseUsecase)
 	publicCourseDelivery := delivery.NewCourseDelivery(publicCourseHandler)
 	adminCourseHandler := adminHandler.NewCourseHandler(courseUsecase)

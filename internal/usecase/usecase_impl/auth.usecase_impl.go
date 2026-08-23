@@ -2,7 +2,10 @@ package usecase_impl
 
 import (
 	"context"
+	"fmt"
 	"lms-backend/ent"
+	"lms-backend/internal/common/cache"
+	"lms-backend/internal/common/env"
 	"lms-backend/internal/common/response"
 	"lms-backend/internal/dto"
 	"lms-backend/internal/repository"
@@ -15,10 +18,12 @@ import (
 type authUsecase struct {
 	userRepo     repository.UserRepository
 	tokenUsecase usecase.TokenUsecase
+	redisClient  *cache.RedisClient
+	env          *env.Env
 }
 
-func NewAuthUsecase(userRepo repository.UserRepository, tokenUsecase usecase.TokenUsecase) usecase.AuthUsecase {
-	return &authUsecase{userRepo: userRepo, tokenUsecase: tokenUsecase}
+func NewAuthUsecase(userRepo repository.UserRepository, tokenUsecase usecase.TokenUsecase, redisClient *cache.RedisClient, e *env.Env) usecase.AuthUsecase {
+	return &authUsecase{userRepo: userRepo, tokenUsecase: tokenUsecase, redisClient: redisClient, env: e}
 }
 
 func (a *authUsecase) Register(ctx context.Context, req dto.AuthRegisterReq) (*ent.Users, error) {
@@ -57,6 +62,11 @@ func (a *authUsecase) RefreshToken(ctx context.Context, accessToken, refreshToke
 	}
 	if claimAccess.UserId != claimRefresh.UserId {
 		return nil, response.NewUnauthorizedException("tokens do not belong to the same user")
+	}
+	key := fmt.Sprintf("refresh_token:%d", claimRefresh.UserId)
+	stored, err := a.redisClient.Get(ctx, key)
+	if err != nil || stored != refreshToken {
+		return nil, response.NewUnauthorizedException("refresh token is invalid or expired")
 	}
 	user, err := a.userRepo.FindUserById(ctx, claimAccess.UserId)
 	if err != nil {
@@ -97,5 +107,7 @@ func (a *authUsecase) createTokenPair(userID int, role string) (*dto.AuthLoginRe
 	if err != nil {
 		return nil, err
 	}
+	key := fmt.Sprintf("refresh_token:%d", userID)
+	a.redisClient.Set(context.Background(), key, refresh, a.env.ExpiresAtRefreshToken)
 	return &dto.AuthLoginReturn{AccessToken: access, RefreshToken: refresh}, nil
 }

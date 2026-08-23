@@ -4,6 +4,7 @@ import (
 	"context"
 	"math"
 
+	"lms-backend/internal/common/cache"
 	"lms-backend/internal/common/pagination"
 	"lms-backend/internal/common/response"
 	"lms-backend/internal/dto"
@@ -14,10 +15,11 @@ import (
 type lessonUsecase struct {
 	lessonRepo  repository.LessonRepository
 	sectionRepo repository.SectionRepository
+	redisClient *cache.RedisClient
 }
 
-func NewLessonUsecase(lessonRepo repository.LessonRepository, sectionRepo repository.SectionRepository) usecase.LessonUsecase {
-	return &lessonUsecase{lessonRepo: lessonRepo, sectionRepo: sectionRepo}
+func NewLessonUsecase(lessonRepo repository.LessonRepository, sectionRepo repository.SectionRepository, redisClient *cache.RedisClient) usecase.LessonUsecase {
+	return &lessonUsecase{lessonRepo: lessonRepo, sectionRepo: sectionRepo, redisClient: redisClient}
 }
 
 func (u *lessonUsecase) Create(ctx context.Context, sectionID int, body dto.LessonCreateReq) (any, error) {
@@ -30,6 +32,7 @@ func (u *lessonUsecase) Create(ctx context.Context, sectionID int, body dto.Less
 	if err != nil {
 		return nil, response.NewBadRequestException(err.Error())
 	}
+	u.redisClient.DelByPattern(ctx, "courses:*")
 	return data, nil
 }
 
@@ -68,6 +71,7 @@ func (u *lessonUsecase) Update(ctx context.Context, id int, body dto.LessonUpdat
 	if err != nil {
 		return nil, response.NewBadRequestException(err.Error())
 	}
+	u.redisClient.DelByPattern(ctx, "courses:*")
 	return data, nil
 }
 
@@ -76,5 +80,6 @@ func (u *lessonUsecase) Delete(ctx context.Context, id int) (any, error) {
 	if err != nil {
 		return nil, response.NewNotFoundException()
 	}
+	u.redisClient.DelByPattern(ctx, "courses:*")
 	return true, nil
 }
