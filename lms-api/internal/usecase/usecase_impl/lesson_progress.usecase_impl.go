@@ -14,17 +14,20 @@ type lessonProgressUsecase struct {
 	lessonProgressRepository repository.LessonProgressRepository
 	enrollmentRepository     repository.EnrollmentRepository
 	lessonRepository         repository.LessonRepository
+	certificateUsecase       usecase.CertificateUsecase
 }
 
 func NewLessonProgressUsecase(
 	lessonProgressRepository repository.LessonProgressRepository,
 	enrollmentRepository repository.EnrollmentRepository,
 	lessonRepository repository.LessonRepository,
+	certificateUsecase usecase.CertificateUsecase,
 ) usecase.LessonProgressUsecase {
 	return &lessonProgressUsecase{
 		lessonProgressRepository: lessonProgressRepository,
 		enrollmentRepository:     enrollmentRepository,
 		lessonRepository:         lessonRepository,
+		certificateUsecase:       certificateUsecase,
 	}
 }
 
@@ -113,6 +116,7 @@ func (u *lessonProgressUsecase) Complete(ctx context.Context, userID, lessonID i
 	}
 
 	u.syncProgressPercent(ctx, userID, lesson.CourseID)
+	go u.certificateUsecase.CheckAndIssueCertificate(ctx, userID, lesson.CourseID)
 
 	return result, nil
 }

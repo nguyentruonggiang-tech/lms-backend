@@ -5,6 +5,7 @@ import (
 
 	"lms-api/ent"
 	"lms-api/ent/quizattempts"
+	"lms-api/ent/quizzes"
 	"lms-api/internal/common/pagination"
 	"lms-api/internal/repository"
 )
@@ -46,4 +47,32 @@ func (r *quizAttemptRepository) CountByUserAndQuiz(ctx context.Context, userID, 
 			quizattempts.QuizIDEQ(quizID),
 		).
 		Count(ctx)
+}
+
+func (r *quizAttemptRepository) HasPassedAllByUserAndCourse(ctx context.Context, userID, courseID int) (bool, error) {
+	quizIDs, err := r.client.Quizzes.Query().
+		Where(quizzes.CourseIDEQ(courseID)).
+		IDs(ctx)
+	if err != nil {
+		return false, err
+	}
+	if len(quizIDs) == 0 {
+		return true, nil
+	}
+	for _, quizID := range quizIDs {
+		passed, err := r.client.QuizAttempts.Query().
+			Where(
+				quizattempts.UserIDEQ(userID),
+				quizattempts.QuizIDEQ(quizID),
+				quizattempts.IsPassedEQ(true),
+			).
+			Exist(ctx)
+		if err != nil {
+			return false, err
+		}
+		if !passed {
+			return false, nil
+		}
+	}
+	return true, nil
 }

@@ -16,6 +16,7 @@ type quizClientUsecase struct {
 	questionRepository    repository.QuestionRepository
 	quizAttemptRepository repository.QuizAttemptRepository
 	enrollmentRepository  repository.EnrollmentRepository
+	certificateUsecase    usecase.CertificateUsecase
 }
 
 func NewQuizClientUsecase(
@@ -23,12 +24,14 @@ func NewQuizClientUsecase(
 	questionRepository repository.QuestionRepository,
 	quizAttemptRepository repository.QuizAttemptRepository,
 	enrollmentRepository repository.EnrollmentRepository,
+	certificateUsecase usecase.CertificateUsecase,
 ) usecase.QuizClientUsecase {
 	return &quizClientUsecase{
 		quizRepository:        quizRepository,
 		questionRepository:    questionRepository,
 		quizAttemptRepository: quizAttemptRepository,
 		enrollmentRepository:  enrollmentRepository,
+		certificateUsecase:    certificateUsecase,
 	}
 }
 
@@ -106,6 +109,8 @@ func (u *quizClientUsecase) Submit(ctx context.Context, userID, quizID int, body
 	if err != nil {
 		return nil, response.NewBadRequestException(err.Error())
 	}
+
+	go u.certificateUsecase.CheckAndIssueCertificate(ctx, userID, quiz.CourseID)
 
 	return attempt, nil
 }

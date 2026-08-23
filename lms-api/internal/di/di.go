@@ -73,8 +73,14 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	enrollmentHandler := handler.NewEnrollmentHandler(enrollmentUsecase)
 	enrollmentDelivery := delivery.NewEnrollmentDelivery(enrollmentHandler)
 
+	quizAttemptRepository := repository_impl.NewQuizAttemptRepository(entClient)
+	certificateRepository := repository_impl.NewCertificateRepository(entClient)
+	certificateUsecase := usecase_impl.NewCertificateUsecase(certificateRepository, enrollmentRepository, quizAttemptRepository)
+	certificateHandler := handler.NewCertificateHandler(certificateUsecase)
+	certificateDelivery := delivery.NewCertificateDelivery(certificateHandler)
+
 	lessonProgressRepository := repository_impl.NewLessonProgressRepository(entClient)
-	lessonProgressUsecase := usecase_impl.NewLessonProgressUsecase(lessonProgressRepository, enrollmentRepository, lessonRepository)
+	lessonProgressUsecase := usecase_impl.NewLessonProgressUsecase(lessonProgressRepository, enrollmentRepository, lessonRepository, certificateUsecase)
 	lessonProgressHandler := handler.NewLessonProgressHandler(lessonProgressUsecase)
 	lessonProgressDelivery := delivery.NewLessonProgressDelivery(lessonProgressHandler)
 
@@ -82,11 +88,10 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	adminEnrollmentHandler := adminHandler.NewEnrollmentHandler(adminEnrollmentUsecase)
 	adminEnrollmentDelivery := adminDelivery.NewEnrollmentDelivery(adminEnrollmentHandler)
 
-	quizAttemptRepository := repository_impl.NewQuizAttemptRepository(entClient)
-	quizClientUsecase := usecase_impl.NewQuizClientUsecase(quizRepository, questionRepository, quizAttemptRepository, enrollmentRepository)
+	quizClientUsecase := usecase_impl.NewQuizClientUsecase(quizRepository, questionRepository, quizAttemptRepository, enrollmentRepository, certificateUsecase)
 	quizClientHandler := handler.NewQuizClientHandler(quizClientUsecase)
 	quizClientDelivery := delivery.NewQuizClientDelivery(quizClientHandler)
 
-	rootDelivery := delivery.NewRootDelivery(authDelivery, categoryDelivery, publicCourseDelivery, enrollmentDelivery, lessonProgressDelivery, quizClientDelivery, adminCategoryDelivery, adminCourseDelivery, adminSectionDelivery, adminLessonDelivery, adminUserDelivery, adminQuizDelivery, adminQuestionDelivery, adminEnrollmentDelivery, authMiddleware)
+	rootDelivery := delivery.NewRootDelivery(authDelivery, categoryDelivery, publicCourseDelivery, enrollmentDelivery, lessonProgressDelivery, quizClientDelivery, certificateDelivery, adminCategoryDelivery, adminCourseDelivery, adminSectionDelivery, adminLessonDelivery, adminUserDelivery, adminQuizDelivery, adminQuestionDelivery, adminEnrollmentDelivery, authMiddleware)
 	rootDelivery.RegisterRouter(ginEngine)
 }
