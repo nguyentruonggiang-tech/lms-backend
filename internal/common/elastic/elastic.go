@@ -18,10 +18,15 @@ type ElasticClient struct {
 }
 
 type CourseDoc struct {
-	ID          int    `json:"id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Status      string `json:"status"`
+	ID           int     `json:"id"`
+	Title        string  `json:"title"`
+	Description  string  `json:"description"`
+	CategoryID   int     `json:"categoryId"`
+	CategoryName string  `json:"categoryName"`
+	Level        string  `json:"level"`
+	Price        float64 `json:"price"`
+	Status       string  `json:"status"`
+	CreatedAt    string  `json:"createdAt"`
 }
 
 func NewElasticClient(e *env.Env) *ElasticClient {
@@ -79,7 +84,7 @@ func (c *ElasticClient) DeleteCourse(ctx context.Context, id int) error {
 	return nil
 }
 
-func (c *ElasticClient) SearchCourses(ctx context.Context, q string, from, size int) ([]int, int, error) {
+func (c *ElasticClient) SearchCourses(ctx context.Context, q string, from, size int) ([]CourseDoc, int, error) {
 	query := map[string]any{
 		"from": from,
 		"size": size,
@@ -126,9 +131,9 @@ func (c *ElasticClient) SearchCourses(ctx context.Context, q string, from, size 
 		return nil, 0, err
 	}
 
-	ids := make([]int, 0, len(result.Hits.Hits))
+	docs := make([]CourseDoc, 0, len(result.Hits.Hits))
 	for _, h := range result.Hits.Hits {
-		ids = append(ids, h.Source.ID)
+		docs = append(docs, h.Source)
 	}
-	return ids, result.Hits.Total.Value, nil
+	return docs, result.Hits.Total.Value, nil
 }

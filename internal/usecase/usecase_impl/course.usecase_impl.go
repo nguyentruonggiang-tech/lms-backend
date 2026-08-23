@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"lms-backend/internal/common/cache"
+	"lms-backend/internal/common/elastic"
 	"lms-backend/internal/common/pagination"
 	"lms-backend/internal/common/response"
 	"lms-backend/internal/dto"
@@ -20,10 +21,43 @@ type courseUsecase struct {
 	courseRepository repository.CourseRepository
 	lessonRepository repository.LessonRepository
 	redisClient      *cache.RedisClient
+	esClient         *elastic.ElasticClient
 }
 
-func NewCourseUsecase(courseRepository repository.CourseRepository, lessonRepository repository.LessonRepository, redisClient *cache.RedisClient) usecase.CourseUsecase {
-	return &courseUsecase{courseRepository: courseRepository, lessonRepository: lessonRepository, redisClient: redisClient}
+func NewCourseUsecase(
+	courseRepository repository.CourseRepository,
+	lessonRepository repository.LessonRepository,
+	redisClient *cache.RedisClient,
+	esClient *elastic.ElasticClient,
+) usecase.CourseUsecase {
+	return &courseUsecase{
+		courseRepository: courseRepository,
+		lessonRepository: lessonRepository,
+		redisClient:      redisClient,
+		esClient:         esClient,
+	}
+}
+
+func (u *courseUsecase) indexCourse(ctx context.Context, id int) {
+	data, err := u.courseRepository.FindByID(ctx, id)
+	if err != nil {
+		return
+	}
+	categoryName := ""
+	if data.Edges.Categories != nil {
+		categoryName = data.Edges.Categories.Name
+	}
+	u.esClient.IndexCourse(ctx, elastic.CourseDoc{
+		ID:           data.ID,
+		Title:        data.Title,
+		Description:  data.Description,
+		CategoryID:   data.CategoryID,
+		CategoryName: categoryName,
+		Level:        data.Level.String(),
+		Price:        data.Price,
+		Status:       data.Status.String(),
+		CreatedAt:    data.CreatedAt.Format(time.RFC3339),
+	})
 }
 
 func (u *courseUsecase) Create(ctx context.Context, body dto.CourseCreateReq) (any, error) {
@@ -32,6 +66,7 @@ func (u *courseUsecase) Create(ctx context.Context, body dto.CourseCreateReq) (a
 		return nil, response.NewBadRequestException(err.Error())
 	}
 	u.redisClient.DelByPattern(ctx, "courses:*")
+	u.indexCourse(ctx, data.ID)
 	return data, nil
 }
 
@@ -71,6 +106,7 @@ func (u *courseUsecase) Update(ctx context.Context, id int, body dto.CourseUpdat
 		return nil, response.NewBadRequestException(err.Error())
 	}
 	u.redisClient.DelByPattern(ctx, "courses:*")
+	u.indexCourse(ctx, data.ID)
 	return data, nil
 }
 
@@ -80,6 +116,7 @@ func (u *courseUsecase) UpdateStatus(ctx context.Context, id int, body dto.Cours
 		return nil, response.NewBadRequestException(err.Error())
 	}
 	u.redisClient.DelByPattern(ctx, "courses:*")
+	u.indexCourse(ctx, data.ID)
 	return data, nil
 }
 
@@ -89,6 +126,7 @@ func (u *courseUsecase) Delete(ctx context.Context, id int) (any, error) {
 		return nil, response.NewNotFoundException()
 	}
 	u.redisClient.DelByPattern(ctx, "courses:*")
+	u.esClient.DeleteCourse(ctx, id)
 	return true, nil
 }
 
@@ -131,18 +169,41 @@ func (u *courseUsecase) FindAllPublished(ctx context.Context, filter dto.CourseP
 func (u *courseUsecase) SearchPublished(ctx context.Context, filter dto.CoursePublicFilter, page, limit string) (any, error) {
 	query := pagination.Get(page, limit)
 
-	data, err := u.courseRepository.SearchPublished(ctx, filter, query)
+	if filter.Q == "" {
+		data, err := u.courseRepository.SearchPublished(ctx, filter, query)
+		if err != nil {
+			return nil, response.NewBadRequestException(err.Error())
+		}
+		total, err := u.courseRepository.CountSearch(ctx, filter)
+		if err != nil {
+			return nil, response.NewBadRequestException(err.Error())
+		}
+		return pagination.Response[any]{
+			Items:     data,
+			Page:      query.Page,
+			Limit:     query.Limit,
+			TotalItem: total,
+			TotalPage: int(math.Ceil(float64(total) / float64(query.Limit))),
+		}, nil
+	}
+
+	docs, total, err := u.esClient.SearchCourses(ctx, filter.Q, query.Offset, query.Limit)
 	if err != nil {
 		return nil, response.NewBadRequestException(err.Error())
 	}
 
-	total, err := u.courseRepository.CountSearch(ctx, filter)
-	if err != nil {
-		return nil, response.NewBadRequestException(err.Error())
+	if len(docs) == 0 {
+		return pagination.Response[any]{
+			Items:     []any{},
+			Page:      query.Page,
+			Limit:     query.Limit,
+			TotalItem: 0,
+			TotalPage: 0,
+		}, nil
 	}
 
 	return pagination.Response[any]{
-		Items:     data,
+		Items:     docs,
 		Page:      query.Page,
 		Limit:     query.Limit,
 		TotalItem: total,
@@ -192,3 +253,4 @@ func (u *courseUsecase) FindPreviewLessons(ctx context.Context, courseID int) (a
 	}
 	return data, nil
 }
+
