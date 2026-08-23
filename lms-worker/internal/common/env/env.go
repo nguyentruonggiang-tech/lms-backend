@@ -14,6 +14,8 @@ type Env struct {
 	ElasticUser            string
 	ElasticPassword        string
 	ElasticCertFingerprint string
+
+	RabbitMQURL string
 }
 
 func New() *Env {
@@ -25,6 +27,7 @@ func New() *Env {
 		ElasticUser:            os.Getenv("ELASTIC_USER"),
 		ElasticPassword:        os.Getenv("ELASTIC_PASSWORD"),
 		ElasticCertFingerprint: os.Getenv("ELASTIC_CERT_FINGERPRINT"),
+		RabbitMQURL:            os.Getenv("RABBIT_MQ_URL"),
 	}
 
 	fmt.Println("✅ [ENV] Loaded")
