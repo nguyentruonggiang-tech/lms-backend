@@ -16,5 +16,9 @@ func Injection(entClient *ent.Client, elasticClient *elastic.ElasticClient, rabb
 	notificationHandler := handler.NewNotificationHandler(notificationUsecase)
 	notificationDelivery := delivery.NewNotificationDelivery(rabbitmq, notificationHandler)
 
-	return delivery.NewRootDelivery(notificationDelivery)
+	searchUsecase := usecase_impl.NewSearchUsecase(elasticClient)
+	searchHandler := handler.NewSearchHandler(searchUsecase)
+	searchDelivery := delivery.NewSearchDelivery(rabbitmq, searchHandler)
+
+	return delivery.NewRootDelivery(notificationDelivery, searchDelivery)
 }
