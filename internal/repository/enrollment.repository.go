@@ -14,4 +14,5 @@ type EnrollmentRepository interface {
 	FindByUserAndCourse(ctx context.Context, userID, courseID int) (*ent.Enrollments, error)
 	FindByID(ctx context.Context, id int) (*ent.Enrollments, error)
 	Delete(ctx context.Context, id int) error
+	UpdateProgressPercent(ctx context.Context, userID, courseID int, percent float64) error
 }

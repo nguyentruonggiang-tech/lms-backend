@@ -74,3 +74,13 @@ func (r *enrollmentRepository) FindByID(ctx context.Context, id int) (*ent.Enrol
 func (r *enrollmentRepository) Delete(ctx context.Context, id int) error {
 	return r.client.Enrollments.DeleteOneID(id).Exec(ctx)
 }
+
+func (r *enrollmentRepository) UpdateProgressPercent(ctx context.Context, userID, courseID int, percent float64) error {
+	return r.client.Enrollments.Update().
+		Where(
+			enrollments.UserIDEQ(userID),
+			enrollments.CourseIDEQ(courseID),
+		).
+		SetProgressPercent(percent).
+		Exec(ctx)
+}
