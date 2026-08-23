@@ -1,11 +1,11 @@
 package main
 
 import (
+	"lms-worker/ent"
+	"lms-worker/internal/common/elastic"
 	"lms-worker/internal/common/ent_client"
 	"lms-worker/internal/common/env"
 	"lms-worker/internal/di"
-
-	"lms-worker/ent"
 )
 
 type App struct {
@@ -16,7 +16,8 @@ type App struct {
 func NewApp() *App {
 	e := env.New()
 	ec := ent_client.New(e)
-	di.Injection(ec)
+	elasticClient := elastic.NewElasticClient(e)
+	di.Injection(ec, elasticClient)
 
 	return &App{env: e, entClient: ec}
 }
