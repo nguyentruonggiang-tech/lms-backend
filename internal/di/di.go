@@ -3,6 +3,7 @@ package di
 import (
 	"lms-backend/ent"
 	"lms-backend/internal/common/cache"
+	"lms-backend/internal/common/elastic"
 	"lms-backend/internal/common/env"
 	"lms-backend/internal/common/middlewares"
 	"lms-backend/internal/delivery"
@@ -18,6 +19,7 @@ import (
 func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	tokenUsecase := usecase_impl.NewTokenUsecase(e)
 	redisClient := cache.NewRedisClient(e)
+	elasticClient := elastic.NewElasticClient(e)
 
 	userRepository := repository_impl.NewUserRepository(entClient)
 	authMiddleware := middlewares.NewAuthMiddleware(tokenUsecase, userRepository)
@@ -48,7 +50,7 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	adminLessonDelivery := adminDelivery.NewLessonDelivery(adminLessonHandler)
 
 	courseRepository := repository_impl.NewCourseRepository(entClient)
-	courseUsecase := usecase_impl.NewCourseUsecase(courseRepository, lessonRepository, redisClient)
+	courseUsecase := usecase_impl.NewCourseUsecase(courseRepository, lessonRepository, redisClient, elasticClient)
 	publicCourseHandler := handler.NewCourseHandler(courseUsecase)
 	publicCourseDelivery := delivery.NewCourseDelivery(publicCourseHandler)
 	adminCourseHandler := adminHandler.NewCourseHandler(courseUsecase)
