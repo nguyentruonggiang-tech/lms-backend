@@ -55,6 +55,7 @@ func Start(ginEngine *gin.Engine) {
 			auth,
 			adminCategory,
 			adminCourse,
+			adminSection,
 		}
 
 		for _, mod := range modules {
