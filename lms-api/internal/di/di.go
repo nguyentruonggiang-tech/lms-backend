@@ -97,6 +97,11 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	notificationHandler := handler.NewNotificationHandler(notificationUsecase)
 	notificationDelivery := delivery.NewNotificationDelivery(notificationHandler)
 
-	rootDelivery := delivery.NewRootDelivery(authDelivery, categoryDelivery, publicCourseDelivery, enrollmentDelivery, lessonProgressDelivery, quizClientDelivery, certificateDelivery, notificationDelivery, adminCategoryDelivery, adminCourseDelivery, adminSectionDelivery, adminLessonDelivery, adminUserDelivery, adminQuizDelivery, adminQuestionDelivery, adminEnrollmentDelivery, authMiddleware)
+	dashboardRepository := repository_impl.NewDashboardRepository(entClient)
+	dashboardUsecase := usecase_impl.NewDashboardUsecase(dashboardRepository)
+	adminDashboardHandler := adminHandler.NewDashboardHandler(dashboardUsecase)
+	adminDashboardDelivery := adminDelivery.NewDashboardDelivery(adminDashboardHandler)
+
+	rootDelivery := delivery.NewRootDelivery(authDelivery, categoryDelivery, publicCourseDelivery, enrollmentDelivery, lessonProgressDelivery, quizClientDelivery, certificateDelivery, notificationDelivery, adminCategoryDelivery, adminCourseDelivery, adminSectionDelivery, adminLessonDelivery, adminUserDelivery, adminQuizDelivery, adminQuestionDelivery, adminEnrollmentDelivery, adminDashboardDelivery, authMiddleware)
 	rootDelivery.RegisterRouter(ginEngine)
 }
