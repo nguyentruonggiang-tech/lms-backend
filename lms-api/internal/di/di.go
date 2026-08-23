@@ -52,7 +52,7 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	adminLessonDelivery := adminDelivery.NewLessonDelivery(adminLessonHandler)
 
 	courseRepository := repository_impl.NewCourseRepository(entClient)
-	courseUsecase := usecase_impl.NewCourseUsecase(courseRepository, lessonRepository, redisClient, elasticClient)
+	courseUsecase := usecase_impl.NewCourseUsecase(courseRepository, lessonRepository, redisClient, elasticClient, rabbitmqClient)
 	publicCourseHandler := handler.NewCourseHandler(courseUsecase)
 	publicCourseDelivery := delivery.NewCourseDelivery(publicCourseHandler)
 	adminCourseHandler := adminHandler.NewCourseHandler(courseUsecase)

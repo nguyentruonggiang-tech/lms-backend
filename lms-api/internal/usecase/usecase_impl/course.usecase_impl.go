@@ -11,6 +11,7 @@ import (
 	"lms-api/internal/common/cache"
 	"lms-api/internal/common/elastic"
 	"lms-api/internal/common/pagination"
+	"lms-api/internal/common/rabbitmq"
 	"lms-api/internal/common/response"
 	"lms-api/internal/dto"
 	"lms-api/internal/repository"
@@ -21,20 +22,23 @@ type courseUsecase struct {
 	courseRepository repository.CourseRepository
 	lessonRepository repository.LessonRepository
 	redisClient      *cache.RedisClient
-	esClient         *elastic.ElasticClient
+	elasticClient         *elastic.ElasticClient
+	rabbitmq         *rabbitmq.RabbitMQ
 }
 
 func NewCourseUsecase(
 	courseRepository repository.CourseRepository,
 	lessonRepository repository.LessonRepository,
 	redisClient *cache.RedisClient,
-	esClient *elastic.ElasticClient,
+	elasticClient *elastic.ElasticClient,
+	rabbitmq *rabbitmq.RabbitMQ,
 ) usecase.CourseUsecase {
 	return &courseUsecase{
 		courseRepository: courseRepository,
 		lessonRepository: lessonRepository,
 		redisClient:      redisClient,
-		esClient:         esClient,
+		elasticClient:         elasticClient,
+		rabbitmq:         rabbitmq,
 	}
 }
 
@@ -47,7 +51,7 @@ func (u *courseUsecase) indexCourse(ctx context.Context, id int) {
 	if data.Edges.Categories != nil {
 		categoryName = data.Edges.Categories.Name
 	}
-	u.esClient.IndexCourse(ctx, elastic.CourseDoc{
+	_ = u.rabbitmq.Send(ctx, "search.course_index", elastic.CourseDoc{
 		ID:           data.ID,
 		Title:        data.Title,
 		Description:  data.Description,
@@ -126,7 +130,7 @@ func (u *courseUsecase) Delete(ctx context.Context, id int) (any, error) {
 		return nil, response.NewNotFoundException()
 	}
 	u.redisClient.DelByPattern(ctx, "courses:*")
-	u.esClient.DeleteCourse(ctx, id)
+	u.elasticClient.DeleteCourse(ctx, id)
 	return true, nil
 }
 
@@ -187,7 +191,7 @@ func (u *courseUsecase) SearchPublished(ctx context.Context, filter dto.CoursePu
 		}, nil
 	}
 
-	docs, total, err := u.esClient.SearchCourses(ctx, filter.Q, query.Offset, query.Limit)
+	docs, total, err := u.elasticClient.SearchCourses(ctx, filter.Q, query.Offset, query.Limit)
 	if err != nil {
 		return nil, response.NewBadRequestException(err.Error())
 	}
