@@ -14,6 +14,7 @@ type rootDelivery struct {
 	sectionDelivery  *admin_delivery.SectionDelivery
 	lessonDelivery   *admin_delivery.LessonDelivery
 	quizDelivery     *admin_delivery.QuizDelivery
+	questionDelivery *admin_delivery.QuestionDelivery
 	authMiddleware   *middlewares.AuthMiddleware
 }
 
@@ -24,6 +25,7 @@ func NewRootDelivery(
 	sectionDelivery *admin_delivery.SectionDelivery,
 	lessonDelivery *admin_delivery.LessonDelivery,
 	quizDelivery *admin_delivery.QuizDelivery,
+	questionDelivery *admin_delivery.QuestionDelivery,
 	authMiddleware *middlewares.AuthMiddleware,
 ) *rootDelivery {
 	return &rootDelivery{
@@ -33,6 +35,7 @@ func NewRootDelivery(
 		sectionDelivery:  sectionDelivery,
 		lessonDelivery:   lessonDelivery,
 		quizDelivery:     quizDelivery,
+		questionDelivery: questionDelivery,
 		authMiddleware:   authMiddleware,
 	}
 }
@@ -50,6 +53,7 @@ func (r *rootDelivery) RegisterRouter(ginEngine *gin.Engine) {
 			r.sectionDelivery.RegisterRouter(adminGroup)
 			r.lessonDelivery.RegisterRouter(adminGroup)
 			r.quizDelivery.RegisterRouter(adminGroup)
+			r.questionDelivery.RegisterRouter(adminGroup)
 		}
 	}
 }

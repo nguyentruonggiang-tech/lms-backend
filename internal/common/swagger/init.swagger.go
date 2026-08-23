@@ -58,6 +58,7 @@ func Start(ginEngine *gin.Engine) {
 			adminSection,
 			adminLesson,
 			adminQuiz,
+			adminQuestion,
 		}
 
 		for _, mod := range modules {
