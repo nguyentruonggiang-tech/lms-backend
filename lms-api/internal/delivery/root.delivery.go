@@ -15,6 +15,7 @@ type rootDelivery struct {
 	lessonProgressDelivery  *lessonProgressDelivery
 	quizClientDelivery      *quizClientDelivery
 	certificateDelivery     *certificateDelivery
+	notificationDelivery    *notificationDelivery
 	adminCategoryDelivery   *adminDelivery.CategoryDelivery
 	adminCourseDelivery     *adminDelivery.CourseDelivery
 	sectionDelivery         *adminDelivery.SectionDelivery
@@ -34,6 +35,7 @@ func NewRootDelivery(
 	lessonProgressDelivery *lessonProgressDelivery,
 	quizClientDelivery *quizClientDelivery,
 	certificateDelivery *certificateDelivery,
+	notificationDelivery *notificationDelivery,
 	adminCategoryDelivery *adminDelivery.CategoryDelivery,
 	adminCourseDelivery *adminDelivery.CourseDelivery,
 	sectionDelivery *adminDelivery.SectionDelivery,
@@ -52,6 +54,7 @@ func NewRootDelivery(
 		lessonProgressDelivery:  lessonProgressDelivery,
 		quizClientDelivery:      quizClientDelivery,
 		certificateDelivery:     certificateDelivery,
+		notificationDelivery:    notificationDelivery,
 		adminCategoryDelivery:   adminCategoryDelivery,
 		adminCourseDelivery:     adminCourseDelivery,
 		sectionDelivery:         sectionDelivery,
@@ -78,6 +81,7 @@ func (r *rootDelivery) RegisterRouter(ginEngine *gin.Engine) {
 		r.lessonProgressDelivery.RegisterRouter(studentGroup)
 		r.quizClientDelivery.RegisterRouter(studentGroup)
 		r.certificateDelivery.RegisterStudentRouter(studentGroup)
+		r.notificationDelivery.RegisterRouter(studentGroup)
 
 		adminGroup := apiGroup.Group("admin")
 		adminGroup.Use(r.authMiddleware.Protect, r.authMiddleware.AdminOnly)
