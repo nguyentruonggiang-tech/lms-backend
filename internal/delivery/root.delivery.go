@@ -11,7 +11,8 @@ type rootDelivery struct {
 	authDelivery          *authDelivery
 	categoryDelivery      *categoryDelivery
 	publicCourseDelivery  *courseDelivery
-	enrollmentDelivery    *enrollmentDelivery
+	enrollmentDelivery      *enrollmentDelivery
+	lessonProgressDelivery  *lessonProgressDelivery
 	adminCategoryDelivery *adminDelivery.CategoryDelivery
 	adminCourseDelivery   *adminDelivery.CourseDelivery
 	sectionDelivery       *adminDelivery.SectionDelivery
@@ -27,6 +28,7 @@ func NewRootDelivery(
 	categoryDelivery *categoryDelivery,
 	publicCourseDelivery *courseDelivery,
 	enrollmentDelivery *enrollmentDelivery,
+	lessonProgressDelivery *lessonProgressDelivery,
 	adminCategoryDelivery *adminDelivery.CategoryDelivery,
 	adminCourseDelivery *adminDelivery.CourseDelivery,
 	sectionDelivery *adminDelivery.SectionDelivery,
@@ -40,7 +42,8 @@ func NewRootDelivery(
 		authDelivery:          authDelivery,
 		categoryDelivery:      categoryDelivery,
 		publicCourseDelivery:  publicCourseDelivery,
-		enrollmentDelivery:    enrollmentDelivery,
+		enrollmentDelivery:     enrollmentDelivery,
+		lessonProgressDelivery: lessonProgressDelivery,
 		adminCategoryDelivery: adminCategoryDelivery,
 		adminCourseDelivery:   adminCourseDelivery,
 		sectionDelivery:       sectionDelivery,
@@ -62,6 +65,7 @@ func (r *rootDelivery) RegisterRouter(ginEngine *gin.Engine) {
 		studentGroup := apiGroup.Group("")
 		studentGroup.Use(r.authMiddleware.Protect)
 		r.enrollmentDelivery.RegisterRouter(studentGroup)
+		r.lessonProgressDelivery.RegisterRouter(studentGroup)
 
 		adminGroup := apiGroup.Group("admin")
 		adminGroup.Use(r.authMiddleware.Protect, r.authMiddleware.AdminOnly)
