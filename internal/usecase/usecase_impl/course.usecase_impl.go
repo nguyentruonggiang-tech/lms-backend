@@ -2,8 +2,13 @@ package usecase_impl
 
 import (
 	"context"
+	"crypto/md5"
+	"encoding/json"
+	"fmt"
 	"math"
+	"time"
 
+	"lms-backend/internal/common/cache"
 	"lms-backend/internal/common/pagination"
 	"lms-backend/internal/common/response"
 	"lms-backend/internal/dto"
@@ -14,10 +19,11 @@ import (
 type courseUsecase struct {
 	courseRepository repository.CourseRepository
 	lessonRepository repository.LessonRepository
+	redisClient      *cache.RedisClient
 }
 
-func NewCourseUsecase(courseRepository repository.CourseRepository, lessonRepository repository.LessonRepository) usecase.CourseUsecase {
-	return &courseUsecase{courseRepository: courseRepository, lessonRepository: lessonRepository}
+func NewCourseUsecase(courseRepository repository.CourseRepository, lessonRepository repository.LessonRepository, redisClient *cache.RedisClient) usecase.CourseUsecase {
+	return &courseUsecase{courseRepository: courseRepository, lessonRepository: lessonRepository, redisClient: redisClient}
 }
 
 func (u *courseUsecase) Create(ctx context.Context, body dto.CourseCreateReq) (any, error) {
@@ -25,6 +31,7 @@ func (u *courseUsecase) Create(ctx context.Context, body dto.CourseCreateReq) (a
 	if err != nil {
 		return nil, response.NewBadRequestException(err.Error())
 	}
+	u.redisClient.DelByPattern(ctx, "courses:*")
 	return data, nil
 }
 
@@ -63,6 +70,7 @@ func (u *courseUsecase) Update(ctx context.Context, id int, body dto.CourseUpdat
 	if err != nil {
 		return nil, response.NewBadRequestException(err.Error())
 	}
+	u.redisClient.DelByPattern(ctx, "courses:*")
 	return data, nil
 }
 
@@ -71,6 +79,7 @@ func (u *courseUsecase) UpdateStatus(ctx context.Context, id int, body dto.Cours
 	if err != nil {
 		return nil, response.NewBadRequestException(err.Error())
 	}
+	u.redisClient.DelByPattern(ctx, "courses:*")
 	return data, nil
 }
 
@@ -79,10 +88,19 @@ func (u *courseUsecase) Delete(ctx context.Context, id int) (any, error) {
 	if err != nil {
 		return nil, response.NewNotFoundException()
 	}
+	u.redisClient.DelByPattern(ctx, "courses:*")
 	return true, nil
 }
 
 func (u *courseUsecase) FindAllPublished(ctx context.Context, filter dto.CoursePublicFilter, page, limit string) (any, error) {
+	cacheKey := courseListKey(filter, page, limit)
+	if cached, err := u.redisClient.Get(ctx, cacheKey); err == nil {
+		var result pagination.Response[any]
+		if json.Unmarshal([]byte(cached), &result) == nil {
+			return result, nil
+		}
+	}
+
 	query := pagination.Get(page, limit)
 
 	data, err := u.courseRepository.FindAllPublished(ctx, filter, query)
@@ -95,13 +113,19 @@ func (u *courseUsecase) FindAllPublished(ctx context.Context, filter dto.CourseP
 		return nil, response.NewBadRequestException(err.Error())
 	}
 
-	return pagination.Response[any]{
+	result := pagination.Response[any]{
 		Items:     data,
 		Page:      query.Page,
 		Limit:     query.Limit,
 		TotalItem: total,
 		TotalPage: int(math.Ceil(float64(total) / float64(query.Limit))),
-	}, nil
+	}
+
+	if b, err := json.Marshal(result); err == nil {
+		u.redisClient.Set(ctx, cacheKey, string(b), 60*time.Second)
+	}
+
+	return result, nil
 }
 
 func (u *courseUsecase) SearchPublished(ctx context.Context, filter dto.CoursePublicFilter, page, limit string) (any, error) {
@@ -127,11 +151,33 @@ func (u *courseUsecase) SearchPublished(ctx context.Context, filter dto.CoursePu
 }
 
 func (u *courseUsecase) FindPublishedByID(ctx context.Context, id int) (any, error) {
+	cacheKey := fmt.Sprintf("courses:detail:%d", id)
+	if cached, err := u.redisClient.Get(ctx, cacheKey); err == nil {
+		var result any
+		if json.Unmarshal([]byte(cached), &result) == nil {
+			return result, nil
+		}
+	}
+
 	data, err := u.courseRepository.FindPublishedByID(ctx, id)
 	if err != nil {
 		return nil, response.NewNotFoundException()
 	}
+
+	if b, err := json.Marshal(data); err == nil {
+		u.redisClient.Set(ctx, cacheKey, string(b), 60*time.Second)
+	}
+
 	return data, nil
+}
+
+func courseListKey(filter dto.CoursePublicFilter, page, limit string) string {
+	raw := fmt.Sprintf("%v|%v|%s|%v|%v|%s|%s",
+		filter.CategoryID, filter.Level, filter.Q,
+		filter.MinPrice, filter.MaxPrice, page, limit,
+	)
+	h := md5.Sum([]byte(raw))
+	return fmt.Sprintf("courses:list:%x", h)
 }
 
 func (u *courseUsecase) FindPreviewLessons(ctx context.Context, courseID int) (any, error) {

@@ -20,6 +20,9 @@ type Env struct {
 
 	SecretRefreshToken    string
 	ExpiresAtRefreshToken time.Duration
+
+	RedisAddr string
+	RedisPass string
 }
 
 func New() *Env {
@@ -34,6 +37,8 @@ func New() *Env {
 		ExpiresAtAccessToken:  parseDuration("EXPIRES_AT_ACCESS_TOKEN"),
 		SecretRefreshToken:    os.Getenv("SECRET_REFRESH_TOKEN"),
 		ExpiresAtRefreshToken: parseDuration("EXPIRES_AT_REFRESH_TOKEN"),
+		RedisAddr:             os.Getenv("REDIS_ADDR"),
+		RedisPass:             os.Getenv("REDIS_PASS"),
 	}
 
 	fmt.Println("✅ [ENV] Loaded")
