@@ -43,6 +43,18 @@ services:
     networks:
       - lms-network
 
+  lms-rabbitmq:
+    container_name: lms-rabbitmq
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
+    networks:
+      - lms-network
+
 networks:
   lms-network:
     driver: bridge
