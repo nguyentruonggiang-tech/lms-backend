@@ -1,4 +1,4 @@
-package admin_delivery
+package admin
 
 import (
 	"lms-backend/internal/handler/admin"

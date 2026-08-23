@@ -2,7 +2,7 @@ package delivery
 
 import (
 	"lms-backend/internal/common/middlewares"
-	"lms-backend/internal/delivery/admin"
+	adminDelivery "lms-backend/internal/delivery/admin"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,26 +10,26 @@ import (
 type rootDelivery struct {
 	authDelivery         *authDelivery
 	categoryDelivery     *categoryDelivery
-	adminCategoryDelivery *admin_delivery.CategoryDelivery
-	courseDelivery       *admin_delivery.CourseDelivery
-	sectionDelivery      *admin_delivery.SectionDelivery
-	lessonDelivery       *admin_delivery.LessonDelivery
-	userDelivery         *admin_delivery.UserDelivery
-	quizDelivery         *admin_delivery.QuizDelivery
-	questionDelivery     *admin_delivery.QuestionDelivery
+	adminCategoryDelivery *adminDelivery.CategoryDelivery
+	courseDelivery       *adminDelivery.CourseDelivery
+	sectionDelivery      *adminDelivery.SectionDelivery
+	lessonDelivery       *adminDelivery.LessonDelivery
+	userDelivery         *adminDelivery.UserDelivery
+	quizDelivery         *adminDelivery.QuizDelivery
+	questionDelivery     *adminDelivery.QuestionDelivery
 	authMiddleware       *middlewares.AuthMiddleware
 }
 
 func NewRootDelivery(
 	authDelivery *authDelivery,
 	categoryDelivery *categoryDelivery,
-	adminCategoryDelivery *admin_delivery.CategoryDelivery,
-	courseDelivery *admin_delivery.CourseDelivery,
-	sectionDelivery *admin_delivery.SectionDelivery,
-	lessonDelivery *admin_delivery.LessonDelivery,
-	userDelivery *admin_delivery.UserDelivery,
-	quizDelivery *admin_delivery.QuizDelivery,
-	questionDelivery *admin_delivery.QuestionDelivery,
+	adminCategoryDelivery *adminDelivery.CategoryDelivery,
+	courseDelivery *adminDelivery.CourseDelivery,
+	sectionDelivery *adminDelivery.SectionDelivery,
+	lessonDelivery *adminDelivery.LessonDelivery,
+	userDelivery *adminDelivery.UserDelivery,
+	quizDelivery *adminDelivery.QuizDelivery,
+	questionDelivery *adminDelivery.QuestionDelivery,
 	authMiddleware *middlewares.AuthMiddleware,
 ) *rootDelivery {
 	return &rootDelivery{
