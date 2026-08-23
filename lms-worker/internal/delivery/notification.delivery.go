@@ -21,4 +21,7 @@ func (d *NotificationDelivery) Register(ctx context.Context) {
 	if err := d.rabbitmq.On(ctx, "notification.course_enrolled", d.notificationHandler.HandleCourseEnrolled); err != nil {
 		fmt.Printf("❌ [DELIVERY] failed to register notification.course_enrolled: %v\n", err)
 	}
+	if err := d.rabbitmq.On(ctx, "notification.certificate_issued", d.notificationHandler.HandleCertificateIssued); err != nil {
+		fmt.Printf("❌ [DELIVERY] failed to register notification.certificate_issued: %v\n", err)
+	}
 }

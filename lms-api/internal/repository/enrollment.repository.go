@@ -16,6 +16,7 @@ type EnrollmentRepository interface {
 	FindByID(ctx context.Context, id int) (*ent.Enrollments, error)
 	Delete(ctx context.Context, id int) error
 	UpdateProgressPercent(ctx context.Context, userID, courseID int, percent float64) error
+	CompleteEnrollment(ctx context.Context, userID, courseID int) error
 
 	FindAll(ctx context.Context, filter dto.AdminEnrollmentFilter, query pagination.Query) ([]*ent.Enrollments, error)
 	CountAll(ctx context.Context, filter dto.AdminEnrollmentFilter) (int, error)

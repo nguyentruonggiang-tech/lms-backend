@@ -2,6 +2,8 @@ package repository_impl
 
 import (
 	"context"
+	"time"
+
 	"lms-api/ent"
 	"lms-api/ent/enrollments"
 	"lms-api/internal/common/pagination"
@@ -114,6 +116,17 @@ func (r *enrollmentRepository) UpdateStatus(ctx context.Context, id int, status 
 	return r.client.Enrollments.UpdateOneID(id).
 		SetStatus(enrollments.Status(status)).
 		Save(ctx)
+}
+
+func (r *enrollmentRepository) CompleteEnrollment(ctx context.Context, userID, courseID int) error {
+	return r.client.Enrollments.Update().
+		Where(
+			enrollments.UserIDEQ(userID),
+			enrollments.CourseIDEQ(courseID),
+		).
+		SetStatus(enrollments.StatusCompleted).
+		SetCompletedAt(time.Now()).
+		Exec(ctx)
 }
 
 func (r *enrollmentRepository) UpdateProgressPercent(ctx context.Context, userID, courseID int, percent float64) error {

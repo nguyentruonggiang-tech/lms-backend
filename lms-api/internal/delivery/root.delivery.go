@@ -8,21 +8,22 @@ import (
 )
 
 type rootDelivery struct {
-	authDelivery          *authDelivery
-	categoryDelivery      *categoryDelivery
-	publicCourseDelivery  *courseDelivery
+	authDelivery            *authDelivery
+	categoryDelivery        *categoryDelivery
+	publicCourseDelivery    *courseDelivery
 	enrollmentDelivery      *enrollmentDelivery
-	lessonProgressDelivery *lessonProgressDelivery
-	quizClientDelivery     *quizClientDelivery
-	adminCategoryDelivery *adminDelivery.CategoryDelivery
-	adminCourseDelivery   *adminDelivery.CourseDelivery
-	sectionDelivery       *adminDelivery.SectionDelivery
-	lessonDelivery        *adminDelivery.LessonDelivery
-	userDelivery          *adminDelivery.UserDelivery
-	quizDelivery          *adminDelivery.QuizDelivery
-	questionDelivery          *adminDelivery.QuestionDelivery
-	adminEnrollmentDelivery   *adminDelivery.EnrollmentDelivery
-	authMiddleware        *middlewares.AuthMiddleware
+	lessonProgressDelivery  *lessonProgressDelivery
+	quizClientDelivery      *quizClientDelivery
+	certificateDelivery     *certificateDelivery
+	adminCategoryDelivery   *adminDelivery.CategoryDelivery
+	adminCourseDelivery     *adminDelivery.CourseDelivery
+	sectionDelivery         *adminDelivery.SectionDelivery
+	lessonDelivery          *adminDelivery.LessonDelivery
+	userDelivery            *adminDelivery.UserDelivery
+	quizDelivery            *adminDelivery.QuizDelivery
+	questionDelivery        *adminDelivery.QuestionDelivery
+	adminEnrollmentDelivery *adminDelivery.EnrollmentDelivery
+	authMiddleware          *middlewares.AuthMiddleware
 }
 
 func NewRootDelivery(
@@ -32,6 +33,7 @@ func NewRootDelivery(
 	enrollmentDelivery *enrollmentDelivery,
 	lessonProgressDelivery *lessonProgressDelivery,
 	quizClientDelivery *quizClientDelivery,
+	certificateDelivery *certificateDelivery,
 	adminCategoryDelivery *adminDelivery.CategoryDelivery,
 	adminCourseDelivery *adminDelivery.CourseDelivery,
 	sectionDelivery *adminDelivery.SectionDelivery,
@@ -43,21 +45,22 @@ func NewRootDelivery(
 	authMiddleware *middlewares.AuthMiddleware,
 ) *rootDelivery {
 	return &rootDelivery{
-		authDelivery:          authDelivery,
-		categoryDelivery:      categoryDelivery,
-		publicCourseDelivery:  publicCourseDelivery,
-		enrollmentDelivery:     enrollmentDelivery,
-		lessonProgressDelivery: lessonProgressDelivery,
-		quizClientDelivery:     quizClientDelivery,
-		adminCategoryDelivery: adminCategoryDelivery,
-		adminCourseDelivery:   adminCourseDelivery,
-		sectionDelivery:       sectionDelivery,
-		lessonDelivery:        lessonDelivery,
-		userDelivery:          userDelivery,
-		quizDelivery:          quizDelivery,
-		questionDelivery:          questionDelivery,
-		adminEnrollmentDelivery:   adminEnrollmentDelivery,
-		authMiddleware:        authMiddleware,
+		authDelivery:            authDelivery,
+		categoryDelivery:        categoryDelivery,
+		publicCourseDelivery:    publicCourseDelivery,
+		enrollmentDelivery:      enrollmentDelivery,
+		lessonProgressDelivery:  lessonProgressDelivery,
+		quizClientDelivery:      quizClientDelivery,
+		certificateDelivery:     certificateDelivery,
+		adminCategoryDelivery:   adminCategoryDelivery,
+		adminCourseDelivery:     adminCourseDelivery,
+		sectionDelivery:         sectionDelivery,
+		lessonDelivery:          lessonDelivery,
+		userDelivery:            userDelivery,
+		quizDelivery:            quizDelivery,
+		questionDelivery:        questionDelivery,
+		adminEnrollmentDelivery: adminEnrollmentDelivery,
+		authMiddleware:          authMiddleware,
 	}
 }
 
@@ -67,12 +70,14 @@ func (r *rootDelivery) RegisterRouter(ginEngine *gin.Engine) {
 		r.authDelivery.RegisterRouter(apiGroup)
 		r.categoryDelivery.RegisterRouter(apiGroup)
 		r.publicCourseDelivery.RegisterRouter(apiGroup)
+		r.certificateDelivery.RegisterPublicRouter(apiGroup)
 
 		studentGroup := apiGroup.Group("")
 		studentGroup.Use(r.authMiddleware.Protect)
 		r.enrollmentDelivery.RegisterRouter(studentGroup)
 		r.lessonProgressDelivery.RegisterRouter(studentGroup)
 		r.quizClientDelivery.RegisterRouter(studentGroup)
+		r.certificateDelivery.RegisterStudentRouter(studentGroup)
 
 		adminGroup := apiGroup.Group("admin")
 		adminGroup.Use(r.authMiddleware.Protect, r.authMiddleware.AdminOnly)
