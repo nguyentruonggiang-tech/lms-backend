@@ -29,6 +29,10 @@ func (r *sectionRepository) Create(ctx context.Context, courseID int, body dto.S
 	return q.Save(ctx)
 }
 
+func (r *sectionRepository) FindByID(ctx context.Context, id int) (*ent.Sections, error) {
+	return r.client.Sections.Get(ctx, id)
+}
+
 func (r *sectionRepository) FindByCourseID(ctx context.Context, courseID int, query pagination.Query) ([]*ent.Sections, error) {
 	return r.client.Sections.Query().
 		Where(sections.CourseIDEQ(courseID)).

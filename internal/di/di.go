@@ -39,6 +39,11 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	adminSectionHandler := adminHandler.NewSectionHandler(sectionUsecase)
 	adminSectionDelivery := admin_delivery.NewSectionDelivery(adminSectionHandler)
 
-	rootDelivery := delivery.NewRootDelivery(authDelivery, categoryDelivery, adminCourseDelivery, adminSectionDelivery, authMiddleware)
+	lessonRepository := repository_impl.NewLessonRepository(entClient)
+	lessonUsecase := usecase_impl.NewLessonUsecase(lessonRepository, sectionRepository)
+	adminLessonHandler := adminHandler.NewLessonHandler(lessonUsecase)
+	adminLessonDelivery := admin_delivery.NewLessonDelivery(adminLessonHandler)
+
+	rootDelivery := delivery.NewRootDelivery(authDelivery, categoryDelivery, adminCourseDelivery, adminSectionDelivery, adminLessonDelivery, authMiddleware)
 	rootDelivery.RegisterRouter(ginEngine)
 }
