@@ -24,6 +24,10 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	authHandler := handler.NewAuthHandler(authUsecase)
 	authDelivery := delivery.NewAuthDelivery(authHandler, authMiddleware)
 
+	adminUserUsecase := usecase_impl.NewAdminUserUsecase(userRepository)
+	adminUserHandler := adminHandler.NewUserHandler(adminUserUsecase)
+	adminUserDelivery := admin_delivery.NewUserDelivery(adminUserHandler)
+
 	categoryRepository := repository_impl.NewCategoryRepository(entClient)
 	categoryUsecase := usecase_impl.NewCategoryUsecase(categoryRepository)
 	categoryHandler := adminHandler.NewCategoryHandler(categoryUsecase)
@@ -54,6 +58,6 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	adminQuestionHandler := adminHandler.NewQuestionHandler(questionUsecase)
 	adminQuestionDelivery := admin_delivery.NewQuestionDelivery(adminQuestionHandler)
 
-	rootDelivery := delivery.NewRootDelivery(authDelivery, categoryDelivery, adminCourseDelivery, adminSectionDelivery, adminLessonDelivery, adminQuizDelivery, adminQuestionDelivery, authMiddleware)
+	rootDelivery := delivery.NewRootDelivery(authDelivery, categoryDelivery, adminCourseDelivery, adminSectionDelivery, adminLessonDelivery, adminUserDelivery, adminQuizDelivery, adminQuestionDelivery, authMiddleware)
 	rootDelivery.RegisterRouter(ginEngine)
 }
