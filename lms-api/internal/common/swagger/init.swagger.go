@@ -58,6 +58,7 @@ func Start(ginEngine *gin.Engine) {
 			enrollment,
 			lessonProgress,
 			quizClient,
+			certificate,
 			adminCategory,
 			adminEnrollment,
 			adminCourse,
