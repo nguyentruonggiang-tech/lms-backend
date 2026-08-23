@@ -25,3 +25,11 @@ type CourseUpdateReq struct {
 type CourseUpdateStatusReq struct {
 	Status string `json:"status" binding:"required,oneof=draft published archived"`
 }
+
+type CoursePublicFilter struct {
+	CategoryID *int
+	Level      string
+	MinPrice   *float64
+	MaxPrice   *float64
+	Q          string
+}

@@ -99,3 +99,95 @@ func (r *courseRepository) UpdateStatus(ctx context.Context, id int, status stri
 func (r *courseRepository) Delete(ctx context.Context, id int) error {
 	return r.client.Courses.DeleteOneID(id).Exec(ctx)
 }
+
+func (r *courseRepository) FindAllPublished(ctx context.Context, filter dto.CoursePublicFilter, query pagination.Query) ([]*ent.Courses, error) {
+	q := r.client.Courses.Query().
+		WithCategories().
+		Where(courses.StatusEQ(courses.StatusPublished))
+
+	if filter.CategoryID != nil {
+		q = q.Where(courses.CategoryIDEQ(*filter.CategoryID))
+	}
+	if filter.Level != "" {
+		q = q.Where(courses.LevelEQ(courses.Level(filter.Level)))
+	}
+	if filter.MinPrice != nil {
+		q = q.Where(courses.PriceGTE(*filter.MinPrice))
+	}
+	if filter.MaxPrice != nil {
+		q = q.Where(courses.PriceLTE(*filter.MaxPrice))
+	}
+
+	return q.Limit(query.Limit).Offset(query.Offset).All(ctx)
+}
+
+func (r *courseRepository) CountPublished(ctx context.Context, filter dto.CoursePublicFilter) (int, error) {
+	q := r.client.Courses.Query().
+		Where(courses.StatusEQ(courses.StatusPublished))
+
+	if filter.CategoryID != nil {
+		q = q.Where(courses.CategoryIDEQ(*filter.CategoryID))
+	}
+	if filter.Level != "" {
+		q = q.Where(courses.LevelEQ(courses.Level(filter.Level)))
+	}
+	if filter.MinPrice != nil {
+		q = q.Where(courses.PriceGTE(*filter.MinPrice))
+	}
+	if filter.MaxPrice != nil {
+		q = q.Where(courses.PriceLTE(*filter.MaxPrice))
+	}
+
+	return q.Count(ctx)
+}
+
+func (r *courseRepository) SearchPublished(ctx context.Context, filter dto.CoursePublicFilter, query pagination.Query) ([]*ent.Courses, error) {
+	q := r.client.Courses.Query().
+		WithCategories().
+		Where(courses.StatusEQ(courses.StatusPublished))
+
+	if filter.Q != "" {
+		q = q.Where(courses.Or(
+			courses.TitleContainsFold(filter.Q),
+			courses.DescriptionContainsFold(filter.Q),
+		))
+	}
+	if filter.CategoryID != nil {
+		q = q.Where(courses.CategoryIDEQ(*filter.CategoryID))
+	}
+	if filter.Level != "" {
+		q = q.Where(courses.LevelEQ(courses.Level(filter.Level)))
+	}
+
+	return q.Limit(query.Limit).Offset(query.Offset).All(ctx)
+}
+
+func (r *courseRepository) CountSearch(ctx context.Context, filter dto.CoursePublicFilter) (int, error) {
+	q := r.client.Courses.Query().
+		Where(courses.StatusEQ(courses.StatusPublished))
+
+	if filter.Q != "" {
+		q = q.Where(courses.Or(
+			courses.TitleContainsFold(filter.Q),
+			courses.DescriptionContainsFold(filter.Q),
+		))
+	}
+	if filter.CategoryID != nil {
+		q = q.Where(courses.CategoryIDEQ(*filter.CategoryID))
+	}
+	if filter.Level != "" {
+		q = q.Where(courses.LevelEQ(courses.Level(filter.Level)))
+	}
+
+	return q.Count(ctx)
+}
+
+func (r *courseRepository) FindPublishedByID(ctx context.Context, id int) (*ent.Courses, error) {
+	return r.client.Courses.Query().
+		Where(
+			courses.IDEQ(id),
+			courses.StatusEQ(courses.StatusPublished),
+		).
+		WithCategories().
+		Only(ctx)
+}

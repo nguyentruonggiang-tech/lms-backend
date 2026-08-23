@@ -76,3 +76,13 @@ func (r *lessonRepository) Update(ctx context.Context, id int, body dto.LessonUp
 func (r *lessonRepository) Delete(ctx context.Context, id int) error {
 	return r.client.Lessons.DeleteOneID(id).Exec(ctx)
 }
+
+func (r *lessonRepository) FindPreviewByCourseID(ctx context.Context, courseID int) ([]*ent.Lessons, error) {
+	return r.client.Lessons.Query().
+		Where(
+			lessons.CourseIDEQ(courseID),
+			lessons.IsPreviewEQ(true),
+		).
+		Order(lessons.BySortOrder()).
+		All(ctx)
+}

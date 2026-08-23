@@ -35,11 +35,6 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	adminCategoryHandler := adminHandler.NewCategoryHandler(categoryUsecase)
 	adminCategoryDelivery := adminDelivery.NewCategoryDelivery(adminCategoryHandler)
 
-	courseRepository := repository_impl.NewCourseRepository(entClient)
-	courseUsecase := usecase_impl.NewCourseUsecase(courseRepository)
-	adminCourseHandler := adminHandler.NewCourseHandler(courseUsecase)
-	adminCourseDelivery := adminDelivery.NewCourseDelivery(adminCourseHandler)
-
 	sectionRepository := repository_impl.NewSectionRepository(entClient)
 	sectionUsecase := usecase_impl.NewSectionUsecase(sectionRepository)
 	adminSectionHandler := adminHandler.NewSectionHandler(sectionUsecase)
@@ -49,6 +44,13 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	lessonUsecase := usecase_impl.NewLessonUsecase(lessonRepository, sectionRepository)
 	adminLessonHandler := adminHandler.NewLessonHandler(lessonUsecase)
 	adminLessonDelivery := adminDelivery.NewLessonDelivery(adminLessonHandler)
+
+	courseRepository := repository_impl.NewCourseRepository(entClient)
+	courseUsecase := usecase_impl.NewCourseUsecase(courseRepository, lessonRepository)
+	publicCourseHandler := handler.NewCourseHandler(courseUsecase)
+	publicCourseDelivery := delivery.NewCourseDelivery(publicCourseHandler)
+	adminCourseHandler := adminHandler.NewCourseHandler(courseUsecase)
+	adminCourseDelivery := adminDelivery.NewCourseDelivery(adminCourseHandler)
 
 	quizRepository := repository_impl.NewQuizRepository(entClient)
 	quizUsecase := usecase_impl.NewQuizUsecase(quizRepository, lessonRepository)
@@ -60,6 +62,6 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 	adminQuestionHandler := adminHandler.NewQuestionHandler(questionUsecase)
 	adminQuestionDelivery := adminDelivery.NewQuestionDelivery(adminQuestionHandler)
 
-	rootDelivery := delivery.NewRootDelivery(authDelivery, categoryDelivery, adminCategoryDelivery, adminCourseDelivery, adminSectionDelivery, adminLessonDelivery, adminUserDelivery, adminQuizDelivery, adminQuestionDelivery, authMiddleware)
+	rootDelivery := delivery.NewRootDelivery(authDelivery, categoryDelivery, publicCourseDelivery, adminCategoryDelivery, adminCourseDelivery, adminSectionDelivery, adminLessonDelivery, adminUserDelivery, adminQuizDelivery, adminQuestionDelivery, authMiddleware)
 	rootDelivery.RegisterRouter(ginEngine)
 }
