@@ -30,3 +30,12 @@ func (h *NotificationHandler) HandleCourseEnrolled(ctx context.Context, body []b
 	}
 	return h.notificationUsecase.CreateCourseEnrolled(ctx, payload.UserID, payload.Title, payload.Content)
 }
+
+func (h *NotificationHandler) HandleCertificateIssued(ctx context.Context, body []byte) error {
+	var payload courseEnrolledPayload
+	if err := json.Unmarshal(body, &payload); err != nil {
+		fmt.Printf("❌ [NOTIFICATION] invalid payload: %v\n", err)
+		return err
+	}
+	return h.notificationUsecase.CreateCourseEnrolled(ctx, payload.UserID, payload.Title, payload.Content)
+}

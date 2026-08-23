@@ -75,7 +75,7 @@ func Injection(ginEngine *gin.Engine, entClient *ent.Client, e *env.Env) {
 
 	quizAttemptRepository := repository_impl.NewQuizAttemptRepository(entClient)
 	certificateRepository := repository_impl.NewCertificateRepository(entClient)
-	certificateUsecase := usecase_impl.NewCertificateUsecase(certificateRepository, enrollmentRepository, quizAttemptRepository)
+	certificateUsecase := usecase_impl.NewCertificateUsecase(certificateRepository, enrollmentRepository, quizAttemptRepository, rabbitmqClient)
 	certificateHandler := handler.NewCertificateHandler(certificateUsecase)
 	certificateDelivery := delivery.NewCertificateDelivery(certificateHandler)
 
