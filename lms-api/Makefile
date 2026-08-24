@@ -13,7 +13,8 @@ docker-down:
 	docker compose down
 
 seed:
-	go run ./cmd/seed/...
+	@export $$(grep -v '^#' ../.env | xargs) && \
+	mysql -h 127.0.0.1 -P 3310 -u root -p"$$MYSQL_ROOT_PASSWORD" "lms-backend" < seed.sql
 
 ent-new:
 	go run -mod=mod entgo.io/ent/cmd/ent new ${name}
