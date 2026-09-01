@@ -17,7 +17,7 @@ func adminCategory(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Category")
-		op.SetSummary("Tạo category")
+		op.SetSummary("Tạo danh mục")
 		op.AddReqStructure(new(dto.CategoryCreateReq))
 		op.AddRespStructure(new(response.SuccessFormat[*ent.Categories]))
 		reflector.AddOperation(op)
@@ -29,7 +29,7 @@ func adminCategory(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Category")
-		op.SetSummary("Danh sách category")
+		op.SetSummary("Danh sách danh mục")
 		op.SetDescription("Có phân trang")
 		op.AddReqStructure(new(struct {
 			Page  int `query:"page" example:"1"`
@@ -45,7 +45,7 @@ func adminCategory(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Category")
-		op.SetSummary("Chi tiết category")
+		op.SetSummary("Chi tiết danh mục")
 		op.AddReqStructure(new(struct {
 			Id string `path:"id" example:"1"`
 		}))
@@ -59,7 +59,7 @@ func adminCategory(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Category")
-		op.SetSummary("Cập nhật category")
+		op.SetSummary("Cập nhật danh mục")
 		op.AddReqStructure(new(struct {
 			Id string `path:"id" example:"1"`
 		}))
@@ -74,7 +74,7 @@ func adminCategory(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Category")
-		op.SetSummary("Xoá category")
+		op.SetSummary("Xóa mềm danh mục")
 		op.AddReqStructure(new(struct {
 			Id string `path:"id" example:"1"`
 		}))

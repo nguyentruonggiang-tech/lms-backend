@@ -35,7 +35,7 @@ func course(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Course")
-		op.SetSummary("Tìm kiếm khóa học")
+		op.SetSummary("Tìm kiếm khóa học bằng Elasticsearch")
 		op.SetDescription("Tìm theo title và description (MySQL LIKE)")
 		op.AddReqStructure(new(struct {
 			Q          string `query:"q" example:"golang"`
@@ -68,7 +68,7 @@ func course(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Course")
-		op.SetSummary("Danh sách bài học xem thử")
+		op.SetSummary("Danh sách bài học được xem thử")
 		op.AddReqStructure(new(struct {
 			Id string `path:"id" example:"1"`
 		}))

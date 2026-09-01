@@ -65,7 +65,7 @@ func adminUser(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin User")
-		op.SetSummary("Đổi role user")
+		op.SetSummary("Đổi role")
 		op.AddReqStructure(new(struct {
 			Id string `path:"id" example:"1"`
 		}))

@@ -18,7 +18,7 @@ func quizClient(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Quiz Client")
-		op.SetSummary("Lấy quiz để làm bài (ẩn correct_option)")
+		op.SetSummary("Lấy quiz để làm bài, không trả correctOption")
 		op.AddReqStructure(new(struct {
 			QuizId string `path:"quizId" example:"1"`
 		}))

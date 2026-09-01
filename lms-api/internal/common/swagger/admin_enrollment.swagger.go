@@ -49,7 +49,7 @@ func adminEnrollment(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Enrollment")
-		op.SetSummary("Đổi trạng thái đăng ký học")
+		op.SetSummary("Đổi trạng thái")
 		op.AddReqStructure(new(struct {
 			Id     string `path:"id" example:"1"`
 			Status string `json:"status" example:"active"`

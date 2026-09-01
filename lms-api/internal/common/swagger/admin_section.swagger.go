@@ -17,7 +17,7 @@ func adminSection(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Section")
-		op.SetSummary("Tạo section")
+		op.SetSummary("Tạo chương")
 		op.AddReqStructure(new(struct {
 			CourseID string `path:"courseId" example:"1"`
 		}))
@@ -32,7 +32,7 @@ func adminSection(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Section")
-		op.SetSummary("Danh sách section theo course")
+		op.SetSummary("Danh sách chương")
 		op.SetDescription("Có phân trang")
 		op.AddReqStructure(new(struct {
 			CourseID string `path:"courseId" example:"1"`
@@ -49,7 +49,7 @@ func adminSection(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Section")
-		op.SetSummary("Cập nhật section")
+		op.SetSummary("Cập nhật chương")
 		op.AddReqStructure(new(struct {
 			Id string `path:"id" example:"1"`
 		}))
@@ -64,7 +64,7 @@ func adminSection(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Section")
-		op.SetSummary("Xoá section")
+		op.SetSummary("Xóa mềm chương")
 		op.AddReqStructure(new(struct {
 			Id string `path:"id" example:"1"`
 		}))

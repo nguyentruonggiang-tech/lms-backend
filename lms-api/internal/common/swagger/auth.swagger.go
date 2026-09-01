@@ -16,7 +16,7 @@ func auth(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Auth")
-		op.SetSummary("Đăng ký tài khoản")
+		op.SetSummary("Đăng ký học viên")
 		op.AddReqStructure(new(dto.AuthRegisterReq))
 		op.AddRespStructure(new(response.SuccessFormat[*ent.Users]))
 		reflector.AddOperation(op)
@@ -40,7 +40,7 @@ func auth(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Auth")
-		op.SetSummary("Làm mới access token")
+		op.SetSummary("Cấp lại token")
 		op.AddRespStructure(new(response.SuccessFormat[bool]))
 		reflector.AddOperation(op)
 	}

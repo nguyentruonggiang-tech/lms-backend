@@ -17,7 +17,7 @@ func adminCourse(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Course")
-		op.SetSummary("Tạo course")
+		op.SetSummary("Tạo khóa học")
 		op.AddReqStructure(new(dto.CourseCreateReq))
 		op.AddRespStructure(new(response.SuccessFormat[*ent.Courses]))
 		reflector.AddOperation(op)
@@ -29,7 +29,7 @@ func adminCourse(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Course")
-		op.SetSummary("Danh sách course")
+		op.SetSummary("Danh sách khóa học")
 		op.SetDescription("Có phân trang")
 		op.AddReqStructure(new(struct {
 			Page  int `query:"page" example:"1"`
@@ -45,7 +45,7 @@ func adminCourse(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Course")
-		op.SetSummary("Chi tiết course")
+		op.SetSummary("Chi tiết khóa học")
 		op.AddReqStructure(new(struct {
 			Id string `path:"id" example:"1"`
 		}))
@@ -59,7 +59,7 @@ func adminCourse(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Course")
-		op.SetSummary("Cập nhật course")
+		op.SetSummary("Cập nhật khóa học")
 		op.AddReqStructure(new(struct {
 			Id string `path:"id" example:"1"`
 		}))
@@ -74,7 +74,7 @@ func adminCourse(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Course")
-		op.SetSummary("Đổi trạng thái course")
+		op.SetSummary("Đổi trạng thái khóa học")
 		op.AddReqStructure(new(struct {
 			Id string `path:"id" example:"1"`
 		}))
@@ -89,7 +89,7 @@ func adminCourse(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Course")
-		op.SetSummary("Xoá course")
+		op.SetSummary("Xóa mềm khóa học")
 		op.AddReqStructure(new(struct {
 			Id string `path:"id" example:"1"`
 		}))

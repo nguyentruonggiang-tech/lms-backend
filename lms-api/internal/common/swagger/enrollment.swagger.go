@@ -17,7 +17,7 @@ func enrollment(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Enrollment")
-		op.SetSummary("Đăng ký học (student only)")
+		op.SetSummary("Đăng ký học một khóa")
 		op.AddReqStructure(new(struct {
 			CourseID int `json:"courseId" required:"true" example:"1"`
 		}))
@@ -31,7 +31,7 @@ func enrollment(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Enrollment")
-		op.SetSummary("Danh sách khóa học đã đăng ký")
+		op.SetSummary("Danh sách khóa học của tôi")
 		op.AddReqStructure(new(struct {
 			Status string `query:"status" example:"active"`
 			Page   int    `query:"page" example:"1"`

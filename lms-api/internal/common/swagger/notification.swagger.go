@@ -17,7 +17,7 @@ func notification(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Notification")
-		op.SetSummary("Danh sách thông báo của tôi (student only)")
+		op.SetSummary("Danh sách thông báo")
 		op.AddReqStructure(new(struct {
 			IsRead *bool `query:"isRead" example:"false"`
 			Page   int   `query:"page" example:"1"`
@@ -33,7 +33,7 @@ func notification(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Notification")
-		op.SetSummary("Đánh dấu thông báo đã đọc")
+		op.SetSummary("Đánh dấu đã đọc")
 		op.AddReqStructure(new(struct {
 			Id string `path:"id" example:"1"`
 		}))
@@ -47,7 +47,7 @@ func notification(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Notification")
-		op.SetSummary("Đánh dấu tất cả thông báo đã đọc")
+		op.SetSummary("Đánh dấu tất cả đã đọc")
 		op.AddRespStructure(new(response.SuccessFormat[bool]))
 		reflector.AddOperation(op)
 	}

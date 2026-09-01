@@ -17,7 +17,7 @@ func lessonProgress(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Lesson Progress")
-		op.SetSummary("Danh sách bài học trong khóa đã đăng ký (kèm is_completed)")
+		op.SetSummary("Danh sách bài học trong khóa đã đăng ký")
 		op.AddReqStructure(new(struct {
 			CourseId string `path:"courseId" example:"1"`
 		}))
@@ -31,7 +31,7 @@ func lessonProgress(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Lesson Progress")
-		op.SetSummary("Chi tiết bài học (kèm is_completed)")
+		op.SetSummary("Xem chi tiết bài học")
 		op.AddReqStructure(new(struct {
 			LessonId string `path:"lessonId" example:"1"`
 		}))
@@ -45,7 +45,7 @@ func lessonProgress(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Lesson Progress")
-		op.SetSummary("Đánh dấu hoàn thành bài học (idempotent)")
+		op.SetSummary("Đánh dấu hoàn thành bài học")
 		op.AddReqStructure(new(struct {
 			LessonId string `path:"lessonId" example:"1"`
 		}))

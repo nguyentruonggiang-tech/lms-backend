@@ -17,7 +17,7 @@ func certificate(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Certificate")
-		op.SetSummary("Danh sách chứng chỉ của tôi (student only)")
+		op.SetSummary("Danh sách chứng chỉ của tôi")
 		op.AddReqStructure(new(struct {
 			Page  int `query:"page" example:"1"`
 			Limit int `query:"limit" example:"10"`

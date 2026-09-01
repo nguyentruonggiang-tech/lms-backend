@@ -32,7 +32,7 @@ func adminQuestion(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Question")
-		op.SetSummary("Danh sách câu hỏi theo quiz")
+		op.SetSummary("Danh sách câu hỏi")
 		op.SetDescription("Có phân trang")
 		op.AddReqStructure(new(struct {
 			QuizID string `path:"quizId" example:"1"`
@@ -64,7 +64,7 @@ func adminQuestion(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Question")
-		op.SetSummary("Xoá câu hỏi")
+		op.SetSummary("Xóa mềm câu hỏi")
 		op.AddReqStructure(new(struct {
 			Id string `path:"id" example:"1"`
 		}))

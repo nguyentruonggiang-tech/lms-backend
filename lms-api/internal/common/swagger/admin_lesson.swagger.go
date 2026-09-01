@@ -32,7 +32,7 @@ func adminLesson(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Lesson")
-		op.SetSummary("Danh sách bài học theo course")
+		op.SetSummary("Danh sách bài học của khóa")
 		op.SetDescription("Có phân trang")
 		op.AddReqStructure(new(struct {
 			CourseID string `path:"courseId" example:"1"`
@@ -78,7 +78,7 @@ func adminLesson(reflector *openapi3.Reflector) error {
 			return err
 		}
 		op.SetTags("Admin Lesson")
-		op.SetSummary("Xoá bài học")
+		op.SetSummary("Xóa mềm bài học")
 		op.AddReqStructure(new(struct {
 			Id string `path:"id" example:"1"`
 		}))
