@@ -21,6 +21,10 @@ type AuthLoginReturn struct {
 	RefreshToken string `json:"refreshToken"`
 }
 
+type AuthRefreshTokenReq struct {
+	RefreshToken string `json:"refreshToken" binding:"required"`
+}
+
 type AuthRefreshTokenReturn struct {
 	AccessToken  string `json:"accessToken"`
 	RefreshToken string `json:"refreshToken"`

@@ -3,11 +3,13 @@ package handler
 import (
 	"errors"
 	"io"
+	"net/http"
+	"strings"
+
 	"lms-api/internal/common/helpers"
 	"lms-api/internal/common/response"
 	"lms-api/internal/dto"
 	"lms-api/internal/usecase"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -35,7 +37,7 @@ func (h *AuthHandler) Register(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	response.Success(result, "registered successfully", http.StatusCreated, ctx)
+	response.Success(result, "Registered successfully", http.StatusCreated, ctx)
 }
 
 func (h *AuthHandler) Login(ctx *gin.Context) {
@@ -53,36 +55,28 @@ func (h *AuthHandler) Login(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	setTokenCookie(ctx, result.AccessToken, result.RefreshToken)
-	response.Success(nil, "login successful", 0, ctx)
+	response.Success(result, "Login successful", 0, ctx)
 }
 
 func (h *AuthHandler) RefreshToken(ctx *gin.Context) {
-	accessToken, err := ctx.Cookie("accessToken")
-	if err != nil {
-		if errors.Is(err, http.ErrNoCookie) {
-			ctx.Error(response.NewUnauthorizedException())
-			return
-		}
-		ctx.Error(response.NewBadRequestException())
+	var body dto.AuthRefreshTokenReq
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.Error(response.NewBadRequestException(err.Error()))
 		return
 	}
-	refreshToken, err := ctx.Cookie("refreshToken")
-	if err != nil {
-		if errors.Is(err, http.ErrNoCookie) {
-			ctx.Error(response.NewUnauthorizedException())
-			return
-		}
-		ctx.Error(response.NewBadRequestException())
-		return
+
+	accessToken := ""
+	authHeader := ctx.GetHeader("Authorization")
+	if strings.HasPrefix(authHeader, "Bearer ") {
+		accessToken = strings.TrimPrefix(authHeader, "Bearer ")
 	}
-	result, err := h.authUsecase.RefreshToken(ctx.Request.Context(), accessToken, refreshToken)
+
+	result, err := h.authUsecase.RefreshToken(ctx.Request.Context(), accessToken, body.RefreshToken)
 	if err != nil {
 		ctx.Error(err)
 		return
 	}
-	setTokenCookie(ctx, result.AccessToken, result.RefreshToken)
-	response.Success(nil, "token refreshed", 0, ctx)
+	response.Success(result, "Token refreshed", 0, ctx)
 }
 
 func (h *AuthHandler) GetInfo(ctx *gin.Context) {
@@ -96,7 +90,7 @@ func (h *AuthHandler) GetInfo(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	response.Success(result, "success", 0, ctx)
+	response.Success(result, "Success", 0, ctx)
 }
 
 func (h *AuthHandler) ChangePassword(ctx *gin.Context) {
@@ -114,11 +108,5 @@ func (h *AuthHandler) ChangePassword(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	response.Success(nil, "password changed", 0, ctx)
-}
-
-func setTokenCookie(ctx *gin.Context, accessToken, refreshToken string) {
-	ctx.SetSameSite(http.SameSiteLaxMode)
-	ctx.SetCookie("accessToken", accessToken, 0, "/", "", false, true)
-	ctx.SetCookie("refreshToken", refreshToken, 0, "/", "", false, true)
+	response.Success(nil, "Password changed", 0, ctx)
 }

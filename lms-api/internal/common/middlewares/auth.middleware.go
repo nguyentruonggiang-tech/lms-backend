@@ -2,12 +2,13 @@ package middlewares
 
 import (
 	"errors"
+	"strings"
+
 	"lms-api/ent/users"
 	"lms-api/internal/common/helpers"
 	"lms-api/internal/common/response"
 	"lms-api/internal/repository"
 	"lms-api/internal/usecase"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -23,17 +24,13 @@ func NewAuthMiddleware(tokenUsecase usecase.TokenUsecase, userRepo repository.Us
 }
 
 func (a *AuthMiddleware) Protect(ctx *gin.Context) {
-	accessToken, err := ctx.Cookie("accessToken")
-	if err != nil {
-		if errors.Is(err, http.ErrNoCookie) {
-			ctx.Error(response.NewUnauthorizedException())
-			ctx.Abort()
-			return
-		}
-		ctx.Error(response.NewBadRequestException())
+	authHeader := ctx.GetHeader("Authorization")
+	if !strings.HasPrefix(authHeader, "Bearer ") {
+		ctx.Error(response.NewUnauthorizedException())
 		ctx.Abort()
 		return
 	}
+	accessToken := strings.TrimPrefix(authHeader, "Bearer ")
 
 	claim, err := a.tokenUsecase.VerifyAccessToken(accessToken)
 	if err != nil {
