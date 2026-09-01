@@ -29,7 +29,9 @@ func Start(ginEngine *gin.Engine) {
         dom_id: "#swagger-ui",
         deepLinking: true,
         presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
-        layout: "StandaloneLayout"
+        layout: "StandaloneLayout",
+        tagsSorter: null,
+        operationsSorter: null
       });
     };
   </script>
@@ -49,6 +51,26 @@ func Start(ginEngine *gin.Engine) {
 		serverDesc := "Local development"
 		reflector.Spec.Servers = []openapi3.Server{
 			{URL: "http://localhost:8080", Description: &serverDesc},
+		}
+
+		reflector.Spec.Tags = []openapi3.Tag{
+			{Name: "Auth"},
+			{Name: "Category"},
+			{Name: "Course"},
+			{Name: "Enrollment"},
+			{Name: "Lesson Progress"},
+			{Name: "Quiz Client"},
+			{Name: "Certificate"},
+			{Name: "Notification"},
+			{Name: "Admin Category"},
+			{Name: "Admin Course"},
+			{Name: "Admin Section"},
+			{Name: "Admin Lesson"},
+			{Name: "Admin Quiz"},
+			{Name: "Admin Question"},
+			{Name: "Admin Enrollment"},
+			{Name: "Admin User"},
+			{Name: "Admin Dashboard"},
 		}
 
 		modules := []func(*openapi3.Reflector) error{
