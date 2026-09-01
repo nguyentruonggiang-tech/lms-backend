@@ -20,8 +20,8 @@ func (d *QuizDelivery) RegisterRouter(adminGroup *gin.RouterGroup) {
 
 	quizzes := adminGroup.Group("quizzes")
 	{
-		quizzes.GET(":id", d.quizHandler.FindByID)
-		quizzes.PUT(":id", d.quizHandler.Update)
-		quizzes.DELETE(":id", d.quizHandler.Delete)
+		quizzes.GET(":quizId", d.quizHandler.FindByID)
+		quizzes.PUT(":quizId", d.quizHandler.Update)
+		quizzes.DELETE(":quizId", d.quizHandler.Delete)
 	}
 }

@@ -44,28 +44,28 @@ func adminQuiz(reflector *openapi3.Reflector) error {
 	}
 
 	{
-		op, err := reflector.NewOperationContext(http.MethodGet, "/api/admin/quizzes/{id}")
+		op, err := reflector.NewOperationContext(http.MethodGet, "/api/admin/quizzes/{quizId}")
 		if err != nil {
 			return err
 		}
 		op.SetTags("Admin Quiz")
 		op.SetSummary("Chi tiết quiz")
 		op.AddReqStructure(new(struct {
-			Id string `path:"id" example:"1"`
+			Id string `path:"quizId" example:"1"`
 		}))
 		op.AddRespStructure(new(response.SuccessFormat[*ent.Quizzes]))
 		reflector.AddOperation(op)
 	}
 
 	{
-		op, err := reflector.NewOperationContext(http.MethodPut, "/api/admin/quizzes/{id}")
+		op, err := reflector.NewOperationContext(http.MethodPut, "/api/admin/quizzes/{quizId}")
 		if err != nil {
 			return err
 		}
 		op.SetTags("Admin Quiz")
 		op.SetSummary("Cập nhật quiz")
 		op.AddReqStructure(new(struct {
-			Id string `path:"id" example:"1"`
+			Id string `path:"quizId" example:"1"`
 		}))
 		op.AddReqStructure(new(dto.QuizUpdateReq))
 		op.AddRespStructure(new(response.SuccessFormat[*ent.Quizzes]))
@@ -73,14 +73,14 @@ func adminQuiz(reflector *openapi3.Reflector) error {
 	}
 
 	{
-		op, err := reflector.NewOperationContext(http.MethodDelete, "/api/admin/quizzes/{id}")
+		op, err := reflector.NewOperationContext(http.MethodDelete, "/api/admin/quizzes/{quizId}")
 		if err != nil {
 			return err
 		}
 		op.SetTags("Admin Quiz")
 		op.SetSummary("Xóa mềm quiz")
 		op.AddReqStructure(new(struct {
-			Id string `path:"id" example:"1"`
+			Id string `path:"quizId" example:"1"`
 		}))
 		op.AddRespStructure(new(response.SuccessFormat[bool]))
 		reflector.AddOperation(op)

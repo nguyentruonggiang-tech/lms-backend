@@ -73,9 +73,9 @@ func (h *QuizHandler) FindByLessonID(ctx *gin.Context) {
 }
 
 func (h *QuizHandler) FindByID(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("id"))
+	id, err := strconv.Atoi(ctx.Param("quizId"))
 	if err != nil {
-		ctx.Error(response.NewBadRequestException("invalid id"))
+		ctx.Error(response.NewBadRequestException("invalid quizId"))
 		return
 	}
 
@@ -89,9 +89,9 @@ func (h *QuizHandler) FindByID(ctx *gin.Context) {
 }
 
 func (h *QuizHandler) Update(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("id"))
+	id, err := strconv.Atoi(ctx.Param("quizId"))
 	if err != nil {
-		ctx.Error(response.NewBadRequestException("invalid id"))
+		ctx.Error(response.NewBadRequestException("invalid quizId"))
 		return
 	}
 
@@ -111,9 +111,9 @@ func (h *QuizHandler) Update(ctx *gin.Context) {
 }
 
 func (h *QuizHandler) Delete(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("id"))
+	id, err := strconv.Atoi(ctx.Param("quizId"))
 	if err != nil {
-		ctx.Error(response.NewBadRequestException("invalid id"))
+		ctx.Error(response.NewBadRequestException("invalid quizId"))
 		return
 	}
 
