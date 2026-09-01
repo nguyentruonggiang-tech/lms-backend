@@ -36,7 +36,7 @@ func (h *LessonProgressHandler) ListLessons(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	response.Success(data, "success", 0, ctx)
+	response.Success(data, "Success", 0, ctx)
 }
 
 func (h *LessonProgressHandler) FindLesson(ctx *gin.Context) {
@@ -57,7 +57,7 @@ func (h *LessonProgressHandler) FindLesson(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	response.Success(data, "success", 0, ctx)
+	response.Success(data, "Success", 0, ctx)
 }
 
 func (h *LessonProgressHandler) Complete(ctx *gin.Context) {
@@ -78,7 +78,7 @@ func (h *LessonProgressHandler) Complete(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	response.Success(data, "success", 0, ctx)
+	response.Success(data, "Success", 0, ctx)
 }
 
 func (h *LessonProgressHandler) GetProgress(ctx *gin.Context) {
@@ -99,5 +99,5 @@ func (h *LessonProgressHandler) GetProgress(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	response.Success(data, "success", 0, ctx)
+	response.Success(data, "Success", 0, ctx)
 }

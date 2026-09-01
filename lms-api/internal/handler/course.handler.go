@@ -43,7 +43,7 @@ func (h *CourseHandler) FindAllPublished(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	response.Success(data, "success", 0, ctx)
+	response.Success(data, "Success", 0, ctx)
 }
 
 func (h *CourseHandler) Search(ctx *gin.Context) {
@@ -63,7 +63,7 @@ func (h *CourseHandler) Search(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	response.Success(data, "success", 0, ctx)
+	response.Success(data, "Success", 0, ctx)
 }
 
 func (h *CourseHandler) FindPublishedByID(ctx *gin.Context) {
@@ -93,5 +93,5 @@ func (h *CourseHandler) FindPreviewLessons(ctx *gin.Context) {
 		ctx.Error(err2)
 		return
 	}
-	response.Success(data, "success", 0, ctx)
+	response.Success(data, "Success", 0, ctx)
 }

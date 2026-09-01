@@ -52,7 +52,7 @@ func (h *EnrollmentHandler) FindMyEnrollments(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	response.Success(data, "success", 0, ctx)
+	response.Success(data, "Success", 0, ctx)
 }
 
 func (h *EnrollmentHandler) FindMyCourse(ctx *gin.Context) {
@@ -73,7 +73,7 @@ func (h *EnrollmentHandler) FindMyCourse(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	response.Success(data, "success", 0, ctx)
+	response.Success(data, "Success", 0, ctx)
 }
 
 func (h *EnrollmentHandler) Cancel(ctx *gin.Context) {
@@ -94,5 +94,5 @@ func (h *EnrollmentHandler) Cancel(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	response.Success(data, "cancelled successfully", 0, ctx)
+	response.Success(data, "Cancelled successfully", 0, ctx)
 }

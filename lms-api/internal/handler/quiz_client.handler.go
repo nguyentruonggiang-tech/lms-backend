@@ -37,7 +37,7 @@ func (h *QuizClientHandler) GetQuiz(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	response.Success(data, "success", 0, ctx)
+	response.Success(data, "Success", 0, ctx)
 }
 
 func (h *QuizClientHandler) Submit(ctx *gin.Context) {
@@ -64,7 +64,7 @@ func (h *QuizClientHandler) Submit(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	response.Success(data, "submitted successfully", 0, ctx)
+	response.Success(data, "Submitted successfully", 0, ctx)
 }
 
 func (h *QuizClientHandler) GetAttempts(ctx *gin.Context) {
@@ -85,5 +85,5 @@ func (h *QuizClientHandler) GetAttempts(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	response.Success(data, "success", 0, ctx)
+	response.Success(data, "Success", 0, ctx)
 }

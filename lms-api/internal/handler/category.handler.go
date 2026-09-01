@@ -21,5 +21,5 @@ func (h *CategoryHandler) FindAll(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	response.Success(data, "success", 0, ctx)
+	response.Success(data, "Success", 0, ctx)
 }
