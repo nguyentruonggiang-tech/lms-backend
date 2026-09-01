@@ -45,7 +45,7 @@ func (h *CourseHandler) FindAll(ctx *gin.Context) {
 }
 
 func (h *CourseHandler) FindByID(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("id"))
+	id, err := strconv.Atoi(ctx.Param("courseId"))
 	if err != nil {
 		ctx.Error(response.NewBadRequestException("invalid id"))
 		return
@@ -61,7 +61,7 @@ func (h *CourseHandler) FindByID(ctx *gin.Context) {
 }
 
 func (h *CourseHandler) Update(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("id"))
+	id, err := strconv.Atoi(ctx.Param("courseId"))
 	if err != nil {
 		ctx.Error(response.NewBadRequestException("invalid id"))
 		return
@@ -83,7 +83,7 @@ func (h *CourseHandler) Update(ctx *gin.Context) {
 }
 
 func (h *CourseHandler) UpdateStatus(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("id"))
+	id, err := strconv.Atoi(ctx.Param("courseId"))
 	if err != nil {
 		ctx.Error(response.NewBadRequestException("invalid id"))
 		return
@@ -105,7 +105,7 @@ func (h *CourseHandler) UpdateStatus(ctx *gin.Context) {
 }
 
 func (h *CourseHandler) Reindex(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("id"))
+	id, err := strconv.Atoi(ctx.Param("courseId"))
 	if err != nil {
 		ctx.Error(response.NewBadRequestException("invalid id"))
 		return
@@ -121,7 +121,7 @@ func (h *CourseHandler) Reindex(ctx *gin.Context) {
 }
 
 func (h *CourseHandler) Delete(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("id"))
+	id, err := strconv.Atoi(ctx.Param("courseId"))
 	if err != nil {
 		ctx.Error(response.NewBadRequestException("invalid id"))
 		return

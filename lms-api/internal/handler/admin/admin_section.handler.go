@@ -57,7 +57,7 @@ func (h *SectionHandler) FindByCourseID(ctx *gin.Context) {
 }
 
 func (h *SectionHandler) Update(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("id"))
+	id, err := strconv.Atoi(ctx.Param("courseId"))
 	if err != nil {
 		ctx.Error(response.NewBadRequestException("invalid id"))
 		return
@@ -79,7 +79,7 @@ func (h *SectionHandler) Update(ctx *gin.Context) {
 }
 
 func (h *SectionHandler) Delete(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("id"))
+	id, err := strconv.Atoi(ctx.Param("courseId"))
 	if err != nil {
 		ctx.Error(response.NewBadRequestException("invalid id"))
 		return

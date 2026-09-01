@@ -21,10 +21,10 @@ func (d *CourseDelivery) RegisterRouter(adminGroup *gin.RouterGroup) {
 	{
 		courses.POST("", d.courseHandler.Create)
 		courses.GET("", d.courseHandler.FindAll)
-		courses.GET(":id", d.courseHandler.FindByID)
-		courses.PUT(":id", d.courseHandler.Update)
-		courses.PATCH(":id/status", d.courseHandler.UpdateStatus)
-		courses.DELETE(":id", d.courseHandler.Delete)
-		courses.POST(":id/reindex", d.courseHandler.Reindex)
+		courses.GET(":courseId", d.courseHandler.FindByID)
+		courses.PUT(":courseId", d.courseHandler.Update)
+		courses.PATCH(":courseId/status", d.courseHandler.UpdateStatus)
+		courses.DELETE(":courseId", d.courseHandler.Delete)
+		courses.POST(":courseId/reindex", d.courseHandler.Reindex)
 	}
 }
