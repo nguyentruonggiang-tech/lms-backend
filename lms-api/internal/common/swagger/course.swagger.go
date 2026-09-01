@@ -36,7 +36,7 @@ func course(reflector *openapi3.Reflector) error {
 		}
 		op.SetTags("Course")
 		op.SetSummary("Tìm kiếm khóa học bằng Elasticsearch")
-		op.SetDescription("Tìm theo title và description (MySQL LIKE)")
+		op.SetDescription("Tìm theo title và description bằng Elasticsearch, chỉ trả khóa học published")
 		op.AddReqStructure(new(struct {
 			Q          string `query:"q" example:"golang"`
 			CategoryID int    `query:"categoryId" example:"1"`
