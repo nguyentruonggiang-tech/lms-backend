@@ -15,8 +15,8 @@ func NewLessonDelivery(lessonHandler *admin.LessonHandler) *LessonDelivery {
 }
 
 func (d *LessonDelivery) RegisterRouter(adminGroup *gin.RouterGroup) {
-	adminGroup.POST("sections/:section_id/lessons", d.lessonHandler.Create)
-	adminGroup.GET("courses/:course_id/lessons", d.lessonHandler.FindByCourseID)
+	adminGroup.POST("sections/:sectionId/lessons", d.lessonHandler.Create)
+	adminGroup.GET("courses/:courseId/lessons", d.lessonHandler.FindByCourseID)
 
 	lessons := adminGroup.Group("lessons")
 	{

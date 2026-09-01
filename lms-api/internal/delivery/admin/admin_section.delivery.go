@@ -15,7 +15,7 @@ func NewSectionDelivery(sectionHandler *admin.SectionHandler) *SectionDelivery {
 }
 
 func (d *SectionDelivery) RegisterRouter(adminGroup *gin.RouterGroup) {
-	courses := adminGroup.Group("courses/:course_id/sections")
+	courses := adminGroup.Group("courses/:courseId/sections")
 	{
 		courses.POST("", d.sectionHandler.Create)
 		courses.GET("", d.sectionHandler.FindByCourseID)

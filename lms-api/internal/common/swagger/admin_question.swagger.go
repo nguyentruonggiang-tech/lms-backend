@@ -12,14 +12,14 @@ import (
 
 func adminQuestion(reflector *openapi3.Reflector) error {
 	{
-		op, err := reflector.NewOperationContext(http.MethodPost, "/api/admin/quizzes/{quiz_id}/questions")
+		op, err := reflector.NewOperationContext(http.MethodPost, "/api/admin/quizzes/{quizId}/questions")
 		if err != nil {
 			return err
 		}
 		op.SetTags("Admin Question")
 		op.SetSummary("Tạo câu hỏi")
 		op.AddReqStructure(new(struct {
-			QuizID string `path:"quiz_id" example:"1"`
+			QuizID string `path:"quizId" example:"1"`
 		}))
 		op.AddReqStructure(new(dto.QuestionCreateReq))
 		op.AddRespStructure(new(response.SuccessFormat[*ent.Questions]))
@@ -27,7 +27,7 @@ func adminQuestion(reflector *openapi3.Reflector) error {
 	}
 
 	{
-		op, err := reflector.NewOperationContext(http.MethodGet, "/api/admin/quizzes/{quiz_id}/questions")
+		op, err := reflector.NewOperationContext(http.MethodGet, "/api/admin/quizzes/{quizId}/questions")
 		if err != nil {
 			return err
 		}
@@ -35,7 +35,7 @@ func adminQuestion(reflector *openapi3.Reflector) error {
 		op.SetSummary("Danh sách câu hỏi theo quiz")
 		op.SetDescription("Có phân trang")
 		op.AddReqStructure(new(struct {
-			QuizID string `path:"quiz_id" example:"1"`
+			QuizID string `path:"quizId" example:"1"`
 			Page   int    `query:"page" example:"1"`
 			Limit  int    `query:"limit" example:"10"`
 		}))

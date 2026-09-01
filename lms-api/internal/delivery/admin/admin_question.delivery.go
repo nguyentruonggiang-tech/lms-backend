@@ -15,7 +15,7 @@ func NewQuestionDelivery(questionHandler *admin.QuestionHandler) *QuestionDelive
 }
 
 func (d *QuestionDelivery) RegisterRouter(adminGroup *gin.RouterGroup) {
-	quizQuestions := adminGroup.Group("quizzes/:quiz_id/questions")
+	quizQuestions := adminGroup.Group("quizzes/:quizId/questions")
 	{
 		quizQuestions.POST("", d.questionHandler.Create)
 		quizQuestions.GET("", d.questionHandler.FindByQuizID)

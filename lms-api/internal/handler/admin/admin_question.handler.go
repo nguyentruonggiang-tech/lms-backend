@@ -19,9 +19,9 @@ func NewQuestionHandler(questionUsecase usecase.QuestionUsecase) *QuestionHandle
 }
 
 func (h *QuestionHandler) Create(ctx *gin.Context) {
-	quizID, err := strconv.Atoi(ctx.Param("quiz_id"))
+	quizID, err := strconv.Atoi(ctx.Param("quizId"))
 	if err != nil {
-		ctx.Error(response.NewBadRequestException("invalid quiz_id"))
+		ctx.Error(response.NewBadRequestException("invalid quizId"))
 		return
 	}
 
@@ -41,9 +41,9 @@ func (h *QuestionHandler) Create(ctx *gin.Context) {
 }
 
 func (h *QuestionHandler) FindByQuizID(ctx *gin.Context) {
-	quizID, err := strconv.Atoi(ctx.Param("quiz_id"))
+	quizID, err := strconv.Atoi(ctx.Param("quizId"))
 	if err != nil {
-		ctx.Error(response.NewBadRequestException("invalid quiz_id"))
+		ctx.Error(response.NewBadRequestException("invalid quizId"))
 		return
 	}
 

@@ -19,9 +19,9 @@ func NewQuizHandler(quizUsecase usecase.QuizUsecase) *QuizHandler {
 }
 
 func (h *QuizHandler) Create(ctx *gin.Context) {
-	lessonID, err := strconv.Atoi(ctx.Param("lesson_id"))
+	lessonID, err := strconv.Atoi(ctx.Param("lessonId"))
 	if err != nil {
-		ctx.Error(response.NewBadRequestException("invalid lesson_id"))
+		ctx.Error(response.NewBadRequestException("invalid lessonId"))
 		return
 	}
 
@@ -41,9 +41,9 @@ func (h *QuizHandler) Create(ctx *gin.Context) {
 }
 
 func (h *QuizHandler) FindByLessonID(ctx *gin.Context) {
-	lessonID, err := strconv.Atoi(ctx.Param("lesson_id"))
+	lessonID, err := strconv.Atoi(ctx.Param("lessonId"))
 	if err != nil {
-		ctx.Error(response.NewBadRequestException("invalid lesson_id"))
+		ctx.Error(response.NewBadRequestException("invalid lessonId"))
 		return
 	}
 

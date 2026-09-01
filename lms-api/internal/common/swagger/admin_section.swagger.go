@@ -12,14 +12,14 @@ import (
 
 func adminSection(reflector *openapi3.Reflector) error {
 	{
-		op, err := reflector.NewOperationContext(http.MethodPost, "/api/admin/courses/{course_id}/sections")
+		op, err := reflector.NewOperationContext(http.MethodPost, "/api/admin/courses/{courseId}/sections")
 		if err != nil {
 			return err
 		}
 		op.SetTags("Admin Section")
 		op.SetSummary("Tạo section")
 		op.AddReqStructure(new(struct {
-			CourseID string `path:"course_id" example:"1"`
+			CourseID string `path:"courseId" example:"1"`
 		}))
 		op.AddReqStructure(new(dto.SectionCreateReq))
 		op.AddRespStructure(new(response.SuccessFormat[*ent.Sections]))
@@ -27,7 +27,7 @@ func adminSection(reflector *openapi3.Reflector) error {
 	}
 
 	{
-		op, err := reflector.NewOperationContext(http.MethodGet, "/api/admin/courses/{course_id}/sections")
+		op, err := reflector.NewOperationContext(http.MethodGet, "/api/admin/courses/{courseId}/sections")
 		if err != nil {
 			return err
 		}
@@ -35,7 +35,7 @@ func adminSection(reflector *openapi3.Reflector) error {
 		op.SetSummary("Danh sách section theo course")
 		op.SetDescription("Có phân trang")
 		op.AddReqStructure(new(struct {
-			CourseID string `path:"course_id" example:"1"`
+			CourseID string `path:"courseId" example:"1"`
 			Page     int    `query:"page" example:"1"`
 			Limit    int    `query:"limit" example:"10"`
 		}))

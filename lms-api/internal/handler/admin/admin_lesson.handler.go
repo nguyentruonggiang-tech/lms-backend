@@ -19,9 +19,9 @@ func NewLessonHandler(lessonUsecase usecase.LessonUsecase) *LessonHandler {
 }
 
 func (h *LessonHandler) Create(ctx *gin.Context) {
-	sectionID, err := strconv.Atoi(ctx.Param("section_id"))
+	sectionID, err := strconv.Atoi(ctx.Param("sectionId"))
 	if err != nil {
-		ctx.Error(response.NewBadRequestException("invalid section_id"))
+		ctx.Error(response.NewBadRequestException("invalid sectionId"))
 		return
 	}
 
@@ -41,9 +41,9 @@ func (h *LessonHandler) Create(ctx *gin.Context) {
 }
 
 func (h *LessonHandler) FindByCourseID(ctx *gin.Context) {
-	courseID, err := strconv.Atoi(ctx.Param("course_id"))
+	courseID, err := strconv.Atoi(ctx.Param("courseId"))
 	if err != nil {
-		ctx.Error(response.NewBadRequestException("invalid course_id"))
+		ctx.Error(response.NewBadRequestException("invalid courseId"))
 		return
 	}
 

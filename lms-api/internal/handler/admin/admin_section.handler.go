@@ -19,9 +19,9 @@ func NewSectionHandler(sectionUsecase usecase.SectionUsecase) *SectionHandler {
 }
 
 func (h *SectionHandler) Create(ctx *gin.Context) {
-	courseID, err := strconv.Atoi(ctx.Param("course_id"))
+	courseID, err := strconv.Atoi(ctx.Param("courseId"))
 	if err != nil {
-		ctx.Error(response.NewBadRequestException("invalid course_id"))
+		ctx.Error(response.NewBadRequestException("invalid courseId"))
 		return
 	}
 
@@ -41,9 +41,9 @@ func (h *SectionHandler) Create(ctx *gin.Context) {
 }
 
 func (h *SectionHandler) FindByCourseID(ctx *gin.Context) {
-	courseID, err := strconv.Atoi(ctx.Param("course_id"))
+	courseID, err := strconv.Atoi(ctx.Param("courseId"))
 	if err != nil {
-		ctx.Error(response.NewBadRequestException("invalid course_id"))
+		ctx.Error(response.NewBadRequestException("invalid courseId"))
 		return
 	}
 
