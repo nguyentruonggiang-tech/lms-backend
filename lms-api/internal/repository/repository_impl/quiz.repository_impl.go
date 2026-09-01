@@ -44,6 +44,20 @@ func (r *quizRepository) CountByLessonID(ctx context.Context, lessonID int) (int
 		Count(ctx)
 }
 
+func (r *quizRepository) FindByCourseID(ctx context.Context, courseID int, query pagination.Query) ([]*ent.Quizzes, error) {
+	return r.client.Quizzes.Query().
+		Where(quizzes.CourseIDEQ(courseID)).
+		Limit(query.Limit).
+		Offset(query.Offset).
+		All(ctx)
+}
+
+func (r *quizRepository) CountByCourseID(ctx context.Context, courseID int) (int, error) {
+	return r.client.Quizzes.Query().
+		Where(quizzes.CourseIDEQ(courseID)).
+		Count(ctx)
+}
+
 func (r *quizRepository) FindByID(ctx context.Context, id int) (*ent.Quizzes, error) {
 	return r.client.Quizzes.Get(ctx, id)
 }

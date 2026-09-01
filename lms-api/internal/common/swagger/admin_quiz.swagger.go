@@ -27,15 +27,15 @@ func adminQuiz(reflector *openapi3.Reflector) error {
 	}
 
 	{
-		op, err := reflector.NewOperationContext(http.MethodGet, "/api/admin/lessons/{lessonId}/quizzes")
+		op, err := reflector.NewOperationContext(http.MethodGet, "/api/admin/courses/{courseId}/quizzes")
 		if err != nil {
 			return err
 		}
 		op.SetTags("Admin Quiz")
-		op.SetSummary("Danh sách quiz theo lesson")
+		op.SetSummary("Danh sách quiz theo course")
 		op.SetDescription("Có phân trang")
 		op.AddReqStructure(new(struct {
-			LessonID string `path:"lessonId" example:"1"`
+			CourseID string `path:"courseId" example:"1"`
 			Page     int    `query:"page" example:"1"`
 			Limit    int    `query:"limit" example:"10"`
 		}))

@@ -33,6 +33,28 @@ func (u *quizUsecase) Create(ctx context.Context, lessonID int, body dto.QuizCre
 	return data, nil
 }
 
+func (u *quizUsecase) FindByCourseID(ctx context.Context, courseID int, page, limit string) (any, error) {
+	query := pagination.Get(page, limit)
+
+	data, err := u.quizRepo.FindByCourseID(ctx, courseID, query)
+	if err != nil {
+		return nil, response.NewBadRequestException(err.Error())
+	}
+
+	total, err := u.quizRepo.CountByCourseID(ctx, courseID)
+	if err != nil {
+		return nil, response.NewBadRequestException(err.Error())
+	}
+
+	return pagination.Response[any]{
+		Items:     data,
+		Page:      query.Page,
+		Limit:     query.Limit,
+		TotalItem: total,
+		TotalPage: int(math.Ceil(float64(total) / float64(query.Limit))),
+	}, nil
+}
+
 func (u *quizUsecase) FindByLessonID(ctx context.Context, lessonID int, page, limit string) (any, error) {
 	query := pagination.Get(page, limit)
 

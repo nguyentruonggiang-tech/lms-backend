@@ -40,6 +40,22 @@ func (h *QuizHandler) Create(ctx *gin.Context) {
 	response.Success(data, "success", 0, ctx)
 }
 
+func (h *QuizHandler) FindByCourseID(ctx *gin.Context) {
+	courseID, err := strconv.Atoi(ctx.Param("courseId"))
+	if err != nil {
+		ctx.Error(response.NewBadRequestException("invalid courseId"))
+		return
+	}
+
+	data, err := h.quizUsecase.FindByCourseID(ctx.Request.Context(), courseID, ctx.Query("page"), ctx.Query("limit"))
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+
+	response.Success(data, "success", 0, ctx)
+}
+
 func (h *QuizHandler) FindByLessonID(ctx *gin.Context) {
 	lessonID, err := strconv.Atoi(ctx.Param("lessonId"))
 	if err != nil {
