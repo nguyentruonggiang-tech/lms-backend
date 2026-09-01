@@ -245,6 +245,15 @@ func courseListKey(filter dto.CoursePublicFilter, page, limit string) string {
 	return fmt.Sprintf("courses:list:%x", h)
 }
 
+func (u *courseUsecase) Reindex(ctx context.Context, id int) (any, error) {
+	_, err := u.courseRepository.FindByID(ctx, id)
+	if err != nil {
+		return nil, response.NewNotFoundException()
+	}
+	u.indexCourse(ctx, id)
+	return true, nil
+}
+
 func (u *courseUsecase) FindPreviewLessons(ctx context.Context, courseID int) (any, error) {
 	_, err := u.courseRepository.FindPublishedByID(ctx, courseID)
 	if err != nil {

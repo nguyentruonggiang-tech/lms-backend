@@ -104,6 +104,22 @@ func (h *CourseHandler) UpdateStatus(ctx *gin.Context) {
 	response.Success(data, "success", 0, ctx)
 }
 
+func (h *CourseHandler) Reindex(ctx *gin.Context) {
+	id, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		ctx.Error(response.NewBadRequestException("invalid id"))
+		return
+	}
+
+	data, err := h.courseUsecase.Reindex(ctx.Request.Context(), id)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+
+	response.Success(data, "success", 0, ctx)
+}
+
 func (h *CourseHandler) Delete(ctx *gin.Context) {
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {

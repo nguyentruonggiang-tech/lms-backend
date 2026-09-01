@@ -12,6 +12,7 @@ type CourseUsecase interface {
 	Update(ctx context.Context, id int, body dto.CourseUpdateReq) (any, error)
 	UpdateStatus(ctx context.Context, id int, body dto.CourseUpdateStatusReq) (any, error)
 	Delete(ctx context.Context, id int) (any, error)
+	Reindex(ctx context.Context, id int) (any, error)
 
 	FindAllPublished(ctx context.Context, filter dto.CoursePublicFilter, page, limit string) (any, error)
 	SearchPublished(ctx context.Context, filter dto.CoursePublicFilter, page, limit string) (any, error)

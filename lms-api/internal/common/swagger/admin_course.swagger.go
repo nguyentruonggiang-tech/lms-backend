@@ -97,5 +97,19 @@ func adminCourse(reflector *openapi3.Reflector) error {
 		reflector.AddOperation(op)
 	}
 
+	{
+		op, err := reflector.NewOperationContext(http.MethodPost, "/api/admin/courses/{id}/reindex")
+		if err != nil {
+			return err
+		}
+		op.SetTags("Admin Course")
+		op.SetSummary("Đẩy lại khóa học vào Elasticsearch")
+		op.AddReqStructure(new(struct {
+			Id string `path:"id" example:"1"`
+		}))
+		op.AddRespStructure(new(response.SuccessFormat[bool]))
+		reflector.AddOperation(op)
+	}
+
 	return nil
 }

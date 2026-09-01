@@ -25,5 +25,6 @@ func (d *CourseDelivery) RegisterRouter(adminGroup *gin.RouterGroup) {
 		courses.PUT(":id", d.courseHandler.Update)
 		courses.PATCH(":id/status", d.courseHandler.UpdateStatus)
 		courses.DELETE(":id", d.courseHandler.Delete)
+		courses.POST(":id/reindex", d.courseHandler.Reindex)
 	}
 }
